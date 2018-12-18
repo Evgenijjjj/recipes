@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:overScrollMode="never"
+        android:layout_height="match_parent">
+
+    <LinearLayout
+            android:baselineAligned="false"
+            android:weightSum="2"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <android.support.v4.view.ViewPager
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:id="@+id/image_view_pager_about_recipe_fragment"
+                android:layout_weight="1.2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        <ProgressBar
+                android:id="@+id/progress_about_recipe_fragment"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="100dp"
+                android:layout_height="10dp"/>
+
+        <android.support.v7.widget.CardView
+                app:cardCornerRadius="8dp"
+                app:cardUseCompatPadding="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="50dp"
+                android:layout_marginHorizontal="10dp"
+                app:cardElevation="5dp"
+                android:layout_weight="0.8"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                <TextView
+                        android:padding="4dp"
+                        android:gravity="center"
+                        android:textSize="15dp"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/black"
+                        android:textAlignment="center"
+                        android:id="@+id/___description_header"
+                        android:text="Описание"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                <View
+                        android:alpha="0.2"
+                        android:background="@android:color/black"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp" android:layout_marginBottom="8dp"
+                        app:layout_constraintBottom_toTopOf="@+id/__scrollview_about"
+                        app:layout_constraintTop_toTopOf="@+id/__scrollview_about"/>
+
+                <ScrollView
+                        android:paddingBottom="30dp"
+                        android:overScrollMode="never"
+                        android:id="@+id/__scrollview_about"
+                        app:layout_constraintTop_toBottomOf="@+id/___description_header"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                    <TextView
+                            android:alpha="0.65"
+                            android:paddingTop="10dp"
+                            android:textColor="@android:color/black"
+                            android:paddingHorizontal="5dp"
+                            android:paddingBottom="5dp"
+                            android:layout_gravity="fill"
+                            android:gravity="center"
+                            android:id="@+id/description_about_recipe_fragment"
+                            android:text="В разгаре лето и ЧМ-2018 по футболу. У нас температура подбирается к 40°C, и в такую жару нет никаких сил стоять у плиты. Выручают быстрые и сытные блюда, например, как эти бургеры. И остается больше времени для просмотра любимого футбола. Продолжаем болеть. Впереди еще половина чемпионата!"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                </ScrollView>
+
+            </android.support.constraint.ConstraintLayout>
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>
