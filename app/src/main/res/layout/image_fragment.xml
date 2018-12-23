@@ -7,9 +7,7 @@
     <de.hdodenhof.circleimageview.CircleImageView
             app:civ_border_width="2dp"
             app:civ_border_color="@color/colorPrimary"
-            android:layout_margin="20dp"
-            android:outlineAmbientShadowColor="@color/colorPrimaryDark"
-            android:outlineSpotShadowColor="@color/colorPrimaryDark"
+            android:layout_margin="10dp"
             android:id="@+id/image_image_fragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>

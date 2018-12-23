@@ -1,39 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<ScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:overScrollMode="never"
         android:layout_height="match_parent">
 
     <LinearLayout
-            android:baselineAligned="false"
             android:weightSum="2"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <android.support.v4.view.ViewPager
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                android:id="@+id/image_view_pager_about_recipe_fragment"
+        <android.support.v7.widget.CardView
+                android:layout_marginTop="20dp"
+                android:layout_marginHorizontal="10dp"
+                app:cardElevation="2dp"
+                app:cardCornerRadius="8dp"
                 android:layout_weight="1.2"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="370dp">
 
-        <ProgressBar
-                android:id="@+id/progress_about_recipe_fragment"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_gravity="center_horizontal"
-                android:layout_width="100dp"
-                android:layout_height="10dp"/>
+            <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                <TextView
+                        android:gravity="center"
+                        android:textSize="12dp"
+                        android:id="@+id/page_status_about_recipe_fragment"
+                        android:text="1/6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintTop_toBottomOf="@+id/view" android:layout_marginBottom="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent" android:layout_marginEnd="5dp"
+                        android:layout_marginRight="5dp"/>
+
+                <android.support.v4.view.ViewPager
+                        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                        android:id="@+id/image_view_pager_about_recipe_fragment"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintBottom_toTopOf="@+id/view"
+                        app:layout_constraintTop_toTopOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                />
+
+                <View
+                        android:alpha="0.2"
+                        android:background="@android:color/black"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        app:layout_constraintBottom_toTopOf="@+id/progress_about_recipe_fragment"
+                        android:layout_marginBottom="8dp" android:id="@+id/view"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+
+                <View
+                        android:alpha="0.2"
+                        android:background="@android:color/black"
+                        android:layout_width="1dp"
+                        android:layout_height="0dp"
+                        android:id="@+id/view2"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/image_view_pager_about_recipe_fragment"
+                        app:layout_constraintEnd_toStartOf="@+id/page_status_about_recipe_fragment"
+                        android:layout_marginEnd="4dp" android:layout_marginRight="4dp" android:layout_marginTop="1dp"/>
+
+                <ProgressBar
+                        android:id="@+id/progress_about_recipe_fragment"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="8dp"
+                        android:layout_marginBottom="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent" android:layout_marginStart="8dp"
+                        app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="8dp"
+                        app:layout_constraintEnd_toStartOf="@+id/view2" android:layout_marginEnd="38dp"
+                        android:layout_marginRight="38dp"/>
+
+
+            </android.support.constraint.ConstraintLayout>
+        </android.support.v7.widget.CardView>
+
 
         <android.support.v7.widget.CardView
                 app:cardCornerRadius="8dp"
-                app:cardUseCompatPadding="true"
+                app:cardUseCompatPadding="false"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="50dp"
                 android:layout_marginHorizontal="10dp"
-                app:cardElevation="5dp"
+                app:cardElevation="2dp"
                 android:layout_weight="0.8"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -59,31 +119,25 @@
                         android:background="@android:color/black"
                         android:layout_width="match_parent"
                         android:layout_height="1dp" android:layout_marginBottom="8dp"
-                        app:layout_constraintBottom_toTopOf="@+id/__scrollview_about"
-                        app:layout_constraintTop_toTopOf="@+id/__scrollview_about"/>
+                        app:layout_constraintBottom_toTopOf="@id/description_about_recipe_fragment"
+                        app:layout_constraintTop_toTopOf="@id/description_about_recipe_fragment"/>
 
-                <ScrollView
-                        android:paddingBottom="30dp"
-                        android:overScrollMode="never"
-                        android:id="@+id/__scrollview_about"
-                        app:layout_constraintTop_toBottomOf="@+id/___description_header"
+
+                <TextView
+                        app:layout_constraintTop_toBottomOf="@id/___description_header"
+                        android:alpha="0.65"
+                        android:paddingTop="10dp"
+                        android:textSize="16dp"
+                        android:textColor="@android:color/black"
+                        android:paddingHorizontal="6dp"
+                        android:paddingBottom="10dp"
+                        android:layout_gravity="fill"
+                        android:gravity="center"
+                        android:id="@+id/description_about_recipe_fragment"
+                        android:text="В разгаре лето и ЧМ-2018 по футболу. У нас температура подбирается к 40°C, и в такую жару нет никаких сил стоять у плиты. Выручают быстрые и сытные блюда, например, как эти бургеры. И остается больше времени для просмотра любимого футбола. Продолжаем болеть. Впереди еще половина чемпионата!"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"/>
 
-                    <TextView
-                            android:alpha="0.65"
-                            android:paddingTop="10dp"
-                            android:textColor="@android:color/black"
-                            android:paddingHorizontal="5dp"
-                            android:paddingBottom="5dp"
-                            android:layout_gravity="fill"
-                            android:gravity="center"
-                            android:id="@+id/description_about_recipe_fragment"
-                            android:text="В разгаре лето и ЧМ-2018 по футболу. У нас температура подбирается к 40°C, и в такую жару нет никаких сил стоять у плиты. Выручают быстрые и сытные блюда, например, как эти бургеры. И остается больше времени для просмотра любимого футбола. Продолжаем болеть. Впереди еще половина чемпионата!"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-
-                </ScrollView>
 
             </android.support.constraint.ConstraintLayout>
         </android.support.v7.widget.CardView>
@@ -91,4 +145,4 @@
     </LinearLayout>
 
 
-</android.support.design.widget.CoordinatorLayout>
+</ScrollView>

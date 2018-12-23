@@ -5,8 +5,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
-import r.evgenymotorin.recipes.model.About
-import r.evgenymotorin.recipes.model.Post
+import r.evgenymotorin.recipes.model.*
 
 
 const val PARSING_LOG = "parsing_log"
@@ -111,5 +110,93 @@ class Parsers {
 
 
         return About(list, description)
+    }
+
+    fun scrapIngredientsFromHTML(page: Document): Ingredients? {
+        if (!page.select("div[class=field-row recipe_ingredients]").toString().isNullOrEmpty()) {
+            var title = ""
+
+            title = page.select("div[class=field-row field-row_mb20 field-row_portion-value]")
+                .select("div[class=title title_sans-serif title_small title_uppercase]")
+                .text()
+
+            title += " " + page.select("div[class=field-row field-row_mb20 field-row_portion-value]")
+                .select("input[class=field__input]")
+                .attr("value") + " "
+
+            title += page.select("div[class=field-row field-row_mb20 field-row_portion-value]")
+                .select("div[class=title title_sans-serif title_small title_uppercase portion-pluralized]")
+                .text()
+
+            val ingredients = page
+                .select("div[class=content-box__content content-box__content_grey js-mediator-article]")
+                .select("table[class=definition-list-table]")
+
+            val ingredientsList: ArrayList<AdaptiveIngredient> = arrayListOf()
+
+            for (i in ingredients) {
+                val name = i.select("span[class=recipe_ingredient_title]")
+                    .text()
+
+                if (name.isEmpty()) continue
+
+                val count = i.select("td[class=definition-list-table__td definition-list-table__td_value]")
+                    .text()
+
+                var about: String? = null
+
+                Log.d(PARSING_LOG + "sdafsgd...", "about: ${i.select("div[class=checkbox-info-container]").text()}")
+
+                if (!i.select("div[class=checkbox-info-container]").toString().isNullOrEmpty())
+                    about = i.select("div[class=checkbox-info-container]")
+                        .select("div[class=checkbox-info__description]")
+                        .text()
+
+                ingredientsList.add(AdaptiveIngredient(name, count, about))
+                Log.d(PARSING_LOG + "sdafsgd...", "ingredient: $name, count: $count")
+            }
+
+
+            Log.d(PARSING_LOG + "sdafsgd", "title: $title")
+            return Ingredients(true, title, ingredientsList, null)
+
+        } else if (page.select("div[class=section-title title]") != null) {
+            var text = page.select("div[class=content-box__content content-box__content_grey js-mediator-article]")
+                .select("p").toString()
+
+            text = text.replace("<p>", "")
+            text = text.replace("</p>", "")
+            text = text.replace("<br>", "\n")
+
+            Log.d(PARSING_LOG + "sdafsgd", "isNotAdaptive: $text")
+            return Ingredients(false, null, null, text)
+        } else
+            return null
+    }
+
+    fun scrapStepsFromHTML(page: Document): ArrayList<Step> {
+        val list: ArrayList<Step> = arrayListOf()
+
+        val steps = page.select("div[class=content-box recipe_step]")
+
+        for (s in steps) {
+            var imgUrl: String? = null
+            var description = ""
+
+            if (!s.select("div[class^=step-image-container]").toString().isNullOrEmpty()) {
+                imgUrl = "https://www.edimdoma.ru" + s.select("div[class^=step-image-container]")
+                    .select("img[data-original]")
+                    .attr("data-original")
+            }
+
+            description = s.select("div[class=plain-text recipe_step_text]")
+                .text()
+
+            list.add(Step(imgUrl, description))
+
+            Log.d(PARSING_LOG + "steps", "img: $imgUrl, description: $description")
+        }
+
+        return list
     }
 }

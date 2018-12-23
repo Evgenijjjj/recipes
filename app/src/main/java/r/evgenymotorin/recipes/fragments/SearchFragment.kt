@@ -108,7 +108,7 @@ class SearchFragment : BaseFragment() {
                 if (totalItemCount - visibleItemCount - firstVisibleItemPosition <= 0 && !isNowLoadingData && firstVisibleItemPosition - lastFirstItem > 1) {
                     lastFirstItem = firstVisibleItemPosition
                     isNowLoadingData = true
-                    Search().searchPostsInToRow(adapter, edit_text_search_fragment.text.toString(), currentPage++)
+                    Search().searchPostsInToRow(adapter, lastSearch!!, currentPage++)
                     Log.d(SEARCH_FRAGMENT_LOG, "updating")
                 }
             }

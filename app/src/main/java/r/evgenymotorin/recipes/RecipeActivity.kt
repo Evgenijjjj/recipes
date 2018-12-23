@@ -16,6 +16,7 @@ import r.evgenymotorin.recipes.di.activity.BaseActivity
 import r.evgenymotorin.recipes.fragments.AboutFragment
 import r.evgenymotorin.recipes.fragments.IngredientsFragment
 import r.evgenymotorin.recipes.fragments.StepsFragment
+import r.evgenymotorin.recipes.parsing.Parsers
 import r.evgenymotorin.recipes.parsing.Query
 
 class RecipeActivity : BaseActivity() {

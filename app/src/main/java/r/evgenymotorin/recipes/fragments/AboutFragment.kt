@@ -1,14 +1,17 @@
 package r.evgenymotorin.recipes.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
-import android.util.Log
+import android.support.v7.widget.CardView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.about_recipe_fragment.*
@@ -22,36 +25,29 @@ import r.evgenymotorin.recipes.parsing.Parsers
 
 const val ABOUT_LOG = "about_log"
 
-class AboutFragment: BaseFragment() {
+class AboutFragment : BaseFragment() {
     private var imageViewPagerAdapter: ImageViewPagerAdapter? = null
-    private var currentPage = 0
 
     companion object {
         var about: About? = null
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.about_recipe_fragment, container, false)
 
-        try {
-            imageViewPagerAdapter = ImageViewPagerAdapter(childFragmentManager)
-            v.findViewById<ViewPager>(R.id.image_view_pager_about_recipe_fragment).adapter = imageViewPagerAdapter
-        } catch (e: Exception) {
-            Log.d(ABOUT_LOG, "e: $e")
-        }
+        imageViewPagerAdapter = ImageViewPagerAdapter(childFragmentManager)
+        v.findViewById<ViewPager>(R.id.image_view_pager_about_recipe_fragment).adapter = imageViewPagerAdapter
+        v.findViewById<ProgressBar>(R.id.progress_about_recipe_fragment).progress = 1
+        v.findViewById<ProgressBar>(R.id.progress_about_recipe_fragment).max = about?.imgUrlsList?.size!!
+        v.findViewById<TextView>(R.id.page_status_about_recipe_fragment).text = "1/${about?.imgUrlsList?.size!!}"
+        v.findViewById<TextView>(R.id.description_about_recipe_fragment).text =  about?.description
 
         return v
     }
 
-    override fun onResume() {
-        super.onResume()
-        image_view_pager_about_recipe_fragment.adapter = imageViewPagerAdapter
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-       // Log.d(ABOUT_LOG, "onCreate HTML: $pageHTML")
 
         if (pageHTML == null) {
             Toast.makeText(activity, "page == null", Toast.LENGTH_LONG).show()
@@ -71,17 +67,13 @@ class AboutFragment: BaseFragment() {
 
             override fun onPageSelected(p0: Int) {
                 progress_about_recipe_fragment.progress = p0 + 1
+                page_status_about_recipe_fragment.text = "${p0 + 1}/${about?.imgUrlsList?.size!!}"
             }
         })
-
-        description_about_recipe_fragment.text = about?.description
-
-        progress_about_recipe_fragment.max = about?.imgUrlsList?.size!!
-        progress_about_recipe_fragment.progress = 1
     }
 
 
-    private inner class ImageViewPagerAdapter(fm: FragmentManager): FragmentPagerAdapter(fm) {
+    private inner class ImageViewPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
         override fun getItem(p0: Int): Fragment? {
             if (p0 < about?.imgUrlsList?.size!!) {
                 return ImageFragment().newInstance(p0)
@@ -94,32 +86,33 @@ class AboutFragment: BaseFragment() {
         }
     }
 
-    class ImageFragment: BaseFragment() {
+    class ImageFragment : BaseFragment() {
         private var position: Int = 0
+        private val strPosition = "position"
 
         fun newInstance(pos: Int): ImageFragment {
             val f = ImageFragment()
             val b = Bundle()
 
-            b.putInt(activity?.getString(R.string.position), pos)
+            b.putInt(strPosition, pos)
             f.arguments = b
             return f
         }
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
-            position = arguments?.getInt(activity?.getString(R.string.position)) ?: 0
+            position = arguments?.getInt(strPosition) ?: 0
         }
 
         override fun onStart() {
             super.onStart()
-            if (about?.imgUrlsList?.isNotEmpty()!!)
+            if (about!!.imgUrlsList.isNotEmpty()) {
                 Picasso.get().load(about!!.imgUrlsList[position]).into(image_image_fragment)
+            }
         }
 
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-            val v = inflater.inflate(R.layout.image_fragment, container, false)
-            return v
+            return inflater.inflate(R.layout.image_fragment, container, false)
         }
     }
 }
