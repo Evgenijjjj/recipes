@@ -1,22 +1,34 @@
 package r.evgenymotorin.recipes
 
+import android.annotation.SuppressLint
+import android.os.AsyncTask
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import r.evgenymotorin.recipes.di.activity.BaseActivity
+import r.evgenymotorin.recipes.fragments.CategoriesFragment
 import r.evgenymotorin.recipes.fragments.SearchFragment
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
+
+    companion object {
+        var internetConnectionStatus: Boolean = false
+    }
+
+    private var checkConnectionAsync: CheckConnectionAsync? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+        checkConnectionAsync = CheckConnectionAsync()
+        checkConnectionAsync?.execute()
 
         val toggle = ActionBarDrawerToggle(
             this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
@@ -27,6 +39,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         nav_view.menu.getItem(0).isChecked = true
         nav_view.setNavigationItemSelectedListener(this)
 
+        title = getString(R.string.search)
         supportFragmentManager.beginTransaction()
             .add(R.id.main_box_content_main, SearchFragment(), getString(R.string.searchFragment))
             .addToBackStack(getString(R.string.searchFragment))
@@ -42,7 +55,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
         return true
     }
@@ -61,14 +73,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.nav_search -> run {
+                title = getString(R.string.search)
+
                 if (fragmentIsExists(getString(R.string.searchFragment))) return@run
                 supportFragmentManager.beginTransaction()
                     .add(R.id.main_box_content_main, SearchFragment(), getString(R.string.searchFragment))
                     .addToBackStack(getString(R.string.searchFragment))
                     .commit()
             }
-            R.id.nav_categories -> {
+            R.id.nav_categories -> run {
+                title = getString(R.string.categories)
 
+                if (fragmentIsExists(getString(R.string.categoriesFragment))) return@run
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.main_box_content_main, CategoriesFragment(), getString(R.string.categoriesFragment))
+                    .addToBackStack(getString(R.string.categoriesFragment))
+                    .commit()
             }
             R.id.nav_favorites -> {
 
@@ -93,5 +113,27 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         supportFragmentManager.beginTransaction().show(fragment).commit()
         return true
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private inner class CheckConnectionAsync: AsyncTask<Void, Void, Void>() {
+        private var executeFlag = true
+
+        override fun doInBackground(vararg params: Void?): Void? {
+            while (executeFlag) {
+                Thread.sleep(500)
+                internetConnection.subscribe { status -> internetConnectionStatus = status }
+            }
+            return null
+        }
+
+        fun setExecuteFlag(b: Boolean) {
+            this.executeFlag = b
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        checkConnectionAsync?.setExecuteFlag(false)
     }
 }

@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_recipe.*
 import org.jsoup.nodes.Document
@@ -48,23 +49,28 @@ class RecipeActivity : BaseActivity() {
     }
 
     private fun initLogic() {
-        mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
+        var tabsCount = 3
+
+        /** Remove about fragment from adapter if about information is empty */
+        if (pageHTML != null && Parsers().scrapAboutInformationFromHTML(pageHTML!!) == null) {
+            tabs.removeTabAt(0)
+            tabsCount = 2
+        }
+
+        mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager, tabsCount)
         recipe_container.adapter = mSectionsPagerAdapter
         recipe_container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(recipe_container))
+        tabs.visibility = View.VISIBLE
     }
 
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_recipe, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         val id = item.itemId
 
         if (id == R.id.action_settings) {
@@ -74,18 +80,18 @@ class RecipeActivity : BaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
+    private inner class SectionsPagerAdapter(fm: FragmentManager,private val pagesCount: Int) : FragmentPagerAdapter(fm) {
 
         override fun getItem(position: Int): Fragment {
             return when (position) {
-                0 -> {
+                pagesCount - 3 -> {
                     fragmentIsExists(getString(R.string.aboutFragment)) ?: AboutFragment()
                 }
-                1 -> {
+                pagesCount - 2 -> {
                     fragmentIsExists(getString(R.string.ingredientsFragment)) ?: IngredientsFragment()
                 }
 
-                2 -> {
+                pagesCount - 1-> {
                     fragmentIsExists(getString(R.string.stepsFragment)) ?: StepsFragment()
                 }
 
@@ -94,8 +100,7 @@ class RecipeActivity : BaseActivity() {
         }
 
         override fun getCount(): Int {
-            // Show 3 total pages.
-            return 3
+            return pagesCount
         }
     }
 
@@ -107,4 +112,5 @@ class RecipeActivity : BaseActivity() {
     private fun fragmentIsExists(fragmentTag: String): Fragment? {
         return supportFragmentManager.findFragmentByTag(fragmentTag) ?: return null
     }
+
 }

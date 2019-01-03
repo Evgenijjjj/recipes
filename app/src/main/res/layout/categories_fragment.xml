@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+        android:paddingTop="10dp"
+        android:clipToPadding="false"
+        android:paddingBottom="50dp"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools" android:background="#eeeeee"
+        android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <LinearLayout
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content">
+
+        <android.support.v7.widget.CardView
+                android:id="@+id/dessert_category"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardElevation="4dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            <ImageView
+                    android:layout_gravity="center_horizontal"
+                    android:visibility="visible"
+                    android:src="@drawable/dessert"
+                    android:layout_width="@dimen/category_pic_width"
+                    android:layout_height="@dimen/category_pic_height"/>
+
+
+            <TextView
+                    android:paddingHorizontal="5dp"
+                    android:paddingVertical="3dp"
+                    android:textSize="25dp"
+                    android:textStyle="bold|italic"
+                    android:textColor="@android:color/white"
+                    android:layout_gravity="center"
+                    android:background="@color/black_35_alpha"
+                    android:text="@string/dessertsString"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+                android:id="@+id/main_food_category"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardElevation="4dp"
+                android:layout_marginVertical="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            <ImageView
+                    android:layout_gravity="center_horizontal"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/main_food"
+                    android:layout_width="@dimen/category_pic_width"
+                    android:layout_height="@dimen/category_pic_height"/>
+
+            <TextView
+                    android:paddingHorizontal="5dp"
+                    android:paddingVertical="3dp"
+                    android:textSize="25dp"
+                    android:textStyle="bold|italic"
+                    android:textColor="@android:color/white"
+                    android:layout_gravity="center"
+                    android:background="@color/black_35_alpha"
+                    android:text="@string/mainFoodString"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+                android:id="@+id/meat_category"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardElevation="4dp"
+                android:layout_marginBottom="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            <View android:layout_width="match_parent" android:layout_height="match_parent"
+                  android:background="@color/black_35_alpha"/>
+
+            <ImageView
+                    android:layout_gravity="center_horizontal"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/meat"
+                    android:layout_width="@dimen/category_pic_width"
+                    android:layout_height="@dimen/category_pic_height"/>
+
+            <TextView
+                    android:paddingHorizontal="5dp"
+                    android:paddingVertical="3dp"
+                    android:textSize="25dp"
+                    android:textStyle="bold|italic"
+                    android:textColor="@android:color/white"
+                    android:layout_gravity="center"
+                    android:background="@color/black_35_alpha"
+                    android:text="@string/meatString"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+                android:id="@+id/salad_category"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardElevation="4dp"
+                android:layout_marginBottom="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            <View android:layout_width="match_parent" android:layout_height="match_parent"
+                  android:background="@color/black_35_alpha"/>
+
+            <ImageView
+                    android:layout_gravity="center_horizontal"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/salad"
+                    android:layout_width="@dimen/category_pic_width"
+                    android:layout_height="@dimen/category_pic_height"/>
+
+            <TextView
+                    android:paddingHorizontal="5dp"
+                    android:paddingVertical="3dp"
+                    android:textSize="25dp"
+                    android:textStyle="bold|italic"
+                    android:textColor="@android:color/white"
+                    android:layout_gravity="center"
+                    android:background="@color/black_35_alpha"
+                    android:text="@string/saladsString"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+                android:id="@+id/soup_category"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardElevation="4dp"
+                android:layout_marginBottom="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            <ImageView
+                    android:layout_gravity="center_horizontal"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/soup"
+                    android:layout_width="@dimen/category_pic_width"
+                    android:layout_height="@dimen/category_pic_height"/>
+
+            <TextView
+                    android:paddingHorizontal="5dp"
+                    android:paddingVertical="3dp"
+                    android:textSize="25dp"
+                    android:textStyle="bold|italic"
+                    android:textColor="@android:color/white"
+                    android:layout_gravity="center"
+                    android:background="@color/black_35_alpha"
+                    android:text="@string/soupsString"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+                android:id="@+id/bakery_category"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardElevation="4dp"
+                android:layout_marginBottom="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            <ImageView
+                    android:layout_gravity="center_horizontal"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/bakery"
+                    android:layout_width="@dimen/category_pic_width"
+                    android:layout_height="@dimen/category_pic_height"/>
+
+            <TextView
+                    android:paddingHorizontal="5dp"
+                    android:paddingVertical="3dp"
+                    android:textSize="25dp"
+                    android:textStyle="bold|italic"
+                    android:textColor="@android:color/white"
+                    android:layout_gravity="center"
+                    android:background="@color/black_35_alpha"
+                    android:text="@string/bakeryString"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+                android:id="@+id/snacks_category"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardElevation="4dp"
+                android:layout_marginBottom="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            <ImageView
+                    android:layout_gravity="center_horizontal"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/snacks"
+                    android:layout_width="@dimen/category_pic_width"
+                    android:layout_height="@dimen/category_pic_height"/>
+
+            <TextView
+                    android:paddingHorizontal="5dp"
+                    android:paddingVertical="3dp"
+                    android:textSize="25dp"
+                    android:textStyle="bold|italic"
+                    android:textColor="@android:color/white"
+                    android:layout_gravity="center"
+                    android:background="@color/black_35_alpha"
+                    android:text="@string/snacksString"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+                android:id="@+id/drinks_category"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardElevation="4dp"
+                android:layout_marginBottom="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            <ImageView
+                    android:layout_gravity="center_horizontal"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/drinks"
+                    android:layout_width="@dimen/category_pic_width"
+                    android:layout_height="@dimen/category_pic_height"/>
+
+            <TextView
+                    android:paddingHorizontal="5dp"
+                    android:paddingVertical="3dp"
+                    android:textSize="25dp"
+                    android:textStyle="bold|italic"
+                    android:textColor="@android:color/white"
+                    android:layout_gravity="center"
+                    android:background="@color/black_35_alpha"
+                    android:text="@string/drinksString"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
+
+</ScrollView>

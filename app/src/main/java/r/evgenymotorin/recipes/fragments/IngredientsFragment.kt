@@ -1,10 +1,14 @@
 package r.evgenymotorin.recipes.fragments
 
+import android.os.Build
 import android.os.Bundle
+import android.support.annotation.RequiresApi
 import android.support.v7.widget.RecyclerView
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
@@ -26,6 +30,7 @@ class IngredientsFragment: BaseFragment() {
         return v
     }
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -42,6 +47,17 @@ class IngredientsFragment: BaseFragment() {
                 adapter.add(IngredientRow(ingredient))
         } else {
             adapter.add(HeaderRow(ingredients!!.text!!))
+        }
+
+        adapter.setOnItemClickListener { item, _ ->
+            try {
+                val row = item as IngredientRow
+
+                if (!row.additionalInfo.isNullOrEmpty()) {
+                    popupWindow.contentView.findViewById<TextView>(R.id.text_view_popup_window).text = row.additionalInfo
+                    popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0)
+                }
+            } catch (e: Exception) {}
         }
     }
 

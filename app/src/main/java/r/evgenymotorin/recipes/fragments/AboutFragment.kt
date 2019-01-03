@@ -36,12 +36,20 @@ class AboutFragment : BaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.about_recipe_fragment, container, false)
 
-        imageViewPagerAdapter = ImageViewPagerAdapter(childFragmentManager)
-        v.findViewById<ViewPager>(R.id.image_view_pager_about_recipe_fragment).adapter = imageViewPagerAdapter
-        v.findViewById<ProgressBar>(R.id.progress_about_recipe_fragment).progress = 1
-        v.findViewById<ProgressBar>(R.id.progress_about_recipe_fragment).max = about?.imgUrlsList?.size!!
-        v.findViewById<TextView>(R.id.page_status_about_recipe_fragment).text = "1/${about?.imgUrlsList?.size!!}"
-        v.findViewById<TextView>(R.id.description_about_recipe_fragment).text =  about?.description
+        if (about?.imgUrlsList != null && about?.imgUrlsList!!.isNotEmpty()) {
+            imageViewPagerAdapter = ImageViewPagerAdapter(childFragmentManager)
+            v.findViewById<ViewPager>(R.id.image_view_pager_about_recipe_fragment).adapter = imageViewPagerAdapter
+            v.findViewById<ProgressBar>(R.id.progress_about_recipe_fragment).progress = 1
+            v.findViewById<ProgressBar>(R.id.progress_about_recipe_fragment).max = about?.imgUrlsList?.size!!
+            v.findViewById<TextView>(R.id.page_status_about_recipe_fragment).text = "1/${about?.imgUrlsList?.size!!}"
+        } else {
+            v.findViewById<CardView>(R.id.img_box_about_recipe_fragment).visibility = View.GONE
+        }
+
+        if (!about?.description.isNullOrEmpty())
+            v.findViewById<TextView>(R.id.description_about_recipe_fragment).text = about?.description
+        else
+            v.findViewById<CardView>(R.id.description_box_about_recipe_fragment).visibility = View.GONE
 
         return v
     }
@@ -65,6 +73,7 @@ class AboutFragment : BaseFragment() {
 
             override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {}
 
+            @SuppressLint("SetTextI18n")
             override fun onPageSelected(p0: Int) {
                 progress_about_recipe_fragment.progress = p0 + 1
                 page_status_about_recipe_fragment.text = "${p0 + 1}/${about?.imgUrlsList?.size!!}"
@@ -106,7 +115,7 @@ class AboutFragment : BaseFragment() {
 
         override fun onStart() {
             super.onStart()
-            if (about!!.imgUrlsList.isNotEmpty()) {
+            if (about!!.imgUrlsList.size > 0) {
                 Picasso.get().load(about!!.imgUrlsList[position]).into(image_image_fragment)
             }
         }

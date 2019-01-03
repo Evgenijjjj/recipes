@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.PopupWindow
 import r.evgenymotorin.recipes.di.app.RecipesApp
+import r.evgenymotorin.recipes.parsing.Search
 import javax.inject.Inject
 
 open class BaseFragment: Fragment() {
@@ -19,6 +21,8 @@ open class BaseFragment: Fragment() {
     @Inject lateinit var inputMethodManager: InputMethodManager
     @Inject lateinit var linearLayoutManager: LinearLayoutManager
     @Inject lateinit var defaultPostBitmap: Bitmap
+    @Inject lateinit var popupWindow: PopupWindow
+    @Inject lateinit var postsSearch: Search
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

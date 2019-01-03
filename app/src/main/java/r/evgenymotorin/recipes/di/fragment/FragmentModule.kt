@@ -1,18 +1,18 @@
 package r.evgenymotorin.recipes.di.fragment
 
-import android.app.Activity
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.support.v4.app.FragmentActivity
 import android.support.v4.app.FragmentManager
 import android.support.v7.widget.LinearLayoutManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.LinearLayout
+import android.widget.PopupWindow
 import dagger.Module
 import dagger.Provides
 import r.evgenymotorin.recipes.R
-import r.evgenymotorin.recipes.di.activity.BaseActivity
+import r.evgenymotorin.recipes.parsing.Search
 import javax.inject.Singleton
 
 @Module
@@ -43,5 +43,24 @@ class FragmentModule(private val activity: FragmentActivity) {
 
     @Provides @Singleton fun providesSupportFragmentManager(): FragmentManager {
         return activity.supportFragmentManager
+    }
+
+    @Provides
+    @Singleton
+    fun providesPopupWindow(): PopupWindow {
+        val popupView = activity.layoutInflater.inflate(R.layout.popup_window, null)
+        val popupWindow = PopupWindow(popupView, LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT, true)
+        popupView.setOnTouchListener { _, _ ->
+            popupWindow.dismiss()
+            true
+        }
+
+        return  popupWindow
+    }
+
+    @Provides
+    @Singleton fun providesPostsSearch(): Search {
+        return Search()
     }
 }

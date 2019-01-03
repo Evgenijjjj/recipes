@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
+import android.support.v7.widget.CardView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -17,10 +18,13 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.search_fragment.*
 import r.evgenymotorin.recipes.di.fragment.BaseFragment
-import r.evgenymotorin.recipes.parsing.Search
 import android.support.v7.widget.RecyclerView
+import android.widget.Toast
+import r.evgenymotorin.recipes.MainActivity.Companion.internetConnectionStatus
 import r.evgenymotorin.recipes.RecipeActivity
+import r.evgenymotorin.recipes.parsing.Search
 import r.evgenymotorin.recipes.rows.RecipeRow
+import java.net.URLEncoder
 
 
 const val SEARCH_FRAGMENT_LOG = "search_fragment"
@@ -28,11 +32,11 @@ const val SEARCH_FRAGMENT_LOG = "search_fragment"
 class SearchFragment : BaseFragment() {
 
     companion object {
-        var isNowLoadingData = false
-        var defPostBitmap : Bitmap? = null
+        var defPostBitmap: Bitmap? = null
     }
 
     private var adapter: GroupAdapter<ViewHolder> = GroupAdapter()
+    private var search: Search? = null
 
     private var lastSearch: String? = null
 
@@ -47,16 +51,18 @@ class SearchFragment : BaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val r = inflater.inflate(R.layout.search_fragment, container, false)
 
-        activity!!.title = getString(R.string.search)
-        val editText = r.findViewById(R.id.edit_text_search_fragment) as EditText
+        val editText = r.findViewById<EditText>(R.id.edit_text_search_fragment)
 
-        r.findViewById<RecyclerView>(R.id.recycler_view_search_fragment).layoutManager = linearLayoutManager
         r.findViewById<RecyclerView>(R.id.recycler_view_search_fragment).adapter = adapter
+        r.findViewById<RecyclerView>(R.id.recycler_view_search_fragment).layoutManager = linearLayoutManager
 
         editText.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 v.clearFocus()
-                inputMethodManager.hideSoftInputFromWindow(editText.applicationWindowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+                inputMethodManager.hideSoftInputFromWindow(
+                    editText.applicationWindowToken,
+                    InputMethodManager.HIDE_NOT_ALWAYS
+                )
 
                 if (lastSearch != editText.text.toString()) {
                     adapter.clear()
@@ -66,10 +72,15 @@ class SearchFragment : BaseFragment() {
 
                 currentPage = 1
                 lastFirstItem = 0
-                Search().searchPostsInToRow(adapter, editText.text.toString(), currentPage++)
+                searchPosts(currentPage++)
+
                 return@setOnEditorActionListener true
             }
             false
+        }
+
+        r.findViewById<CardView>(R.id.update_btn_search_fragment).setOnClickListener {
+            this.searchPosts(currentPage)
         }
 
         return r
@@ -78,6 +89,16 @@ class SearchFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         defPostBitmap = defaultPostBitmap
+        search = Search()
+
+        adapter.setOnItemClickListener { item, _ ->
+            val row = (item as RecipeRow)
+
+            val i = Intent(activity, RecipeActivity::class.java)
+            i.putExtra(getString(R.string.recipeName), row.recipeName)
+            i.putExtra(getString(R.string.recipeLink), row.recipeLink)
+            startActivity(i)
+        }
     }
 
     override fun onStart() {
@@ -95,8 +116,7 @@ class SearchFragment : BaseFragment() {
                     hideSearchView()
                     scrollDist = 0
                     isSearchEditTextVisible = false
-                }
-                else if (!isSearchEditTextVisible && scrollDist < -minScrollDistance) {
+                } else if (!isSearchEditTextVisible && scrollDist < -minScrollDistance) {
                     showSearchView()
                     scrollDist = 0
                     isSearchEditTextVisible = true
@@ -105,31 +125,49 @@ class SearchFragment : BaseFragment() {
                     scrollDist += dy
                 }
 
-                if (totalItemCount - visibleItemCount - firstVisibleItemPosition <= 0 && !isNowLoadingData && firstVisibleItemPosition - lastFirstItem > 1) {
+                if (totalItemCount - visibleItemCount - firstVisibleItemPosition <= 0 && !search!!.isNowLoadingData() && firstVisibleItemPosition - lastFirstItem > 1) {
+
                     lastFirstItem = firstVisibleItemPosition
-                    isNowLoadingData = true
-                    Search().searchPostsInToRow(adapter, lastSearch!!, currentPage++)
+                    searchPosts(currentPage++)
+
                     Log.d(SEARCH_FRAGMENT_LOG, "updating")
                 }
             }
         })
-
-        adapter.setOnItemClickListener { item, _ ->
-            val row = (item as RecipeRow)
-
-            val i = Intent(activity, RecipeActivity::class.java)
-            i.putExtra(getString(R.string.recipeName), row.recipeName)
-            i.putExtra(getString(R.string.recipeLink), row.recipeLink)
-            startActivity(i)
-        }
     }
 
     private fun hideSearchView() {
         edit_text_container_search_fragment.visibility = View.INVISIBLE
-        inputMethodManager.hideSoftInputFromWindow(edit_text_search_fragment.applicationWindowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+        inputMethodManager.hideSoftInputFromWindow(
+            edit_text_search_fragment.applicationWindowToken,
+            InputMethodManager.HIDE_NOT_ALWAYS
+        )
     }
 
     private fun showSearchView() {
         edit_text_container_search_fragment.visibility = View.VISIBLE
+    }
+
+    private fun searchPosts(pageNum: Int): Boolean {
+        return if (!internetConnectionStatus) {
+            Log.d(SEARCH_FRAGMENT_LOG, "bad internet connection")
+            Toast.makeText(activity, activity?.getString(R.string.check_internet), Toast.LENGTH_LONG).show()
+            currentPage--
+            lastSearch = null
+
+            update_btn_search_fragment.visibility = View.VISIBLE
+            false
+        } else {
+            update_btn_search_fragment.visibility = View.INVISIBLE
+
+            val url = getString(R.string.base_site_url) +
+                    "/retsepty?page=$pageNum&query=${URLEncoder.encode(
+                        edit_text_search_fragment.text.toString(),
+                        "utf-8"
+                    )}"
+
+            postsSearch.searchPostsInToRow(adapter, url, progress_bar_search_fragment)
+            true
+        }
     }
 }

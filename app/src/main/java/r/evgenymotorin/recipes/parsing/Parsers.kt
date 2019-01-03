@@ -90,7 +90,7 @@ class Parsers {
         return Post(postUrl, imgUrl, recipeName, countOfPersons, cookingTime, ingredientsCount)
     }
 
-    fun scrapAboutInformationFromHTML(page: Document): About {
+    fun scrapAboutInformationFromHTML(page: Document): About? {
         val list = ArrayList<String>()
 
         val description = page.select("div[class=recipe_description]").text()
@@ -102,18 +102,18 @@ class Parsers {
         } else {
             val link = page.select("div[class=content-media]").select("img").attr("src")
 
-            if (link != defaultPictureUrl)
+            if (link != defaultPictureUrl && link.isNotEmpty())
                 list.add(link)
 
             Log.d(PARSING_LOG + "....", "1 photo :link = ${link} ")
         }
 
-
+        if (list.isEmpty() && description.isNullOrEmpty()) return null
         return About(list, description)
     }
 
     fun scrapIngredientsFromHTML(page: Document): Ingredients? {
-        if (!page.select("div[class=field-row recipe_ingredients]").toString().isNullOrEmpty()) {
+        if (!page.select("div[class=field-row recipe_ingredients]").toString().isEmpty()) {
             var title = ""
 
             title = page.select("div[class=field-row field-row_mb20 field-row_portion-value]")
@@ -147,7 +147,7 @@ class Parsers {
 
                 Log.d(PARSING_LOG + "sdafsgd...", "about: ${i.select("div[class=checkbox-info-container]").text()}")
 
-                if (!i.select("div[class=checkbox-info-container]").toString().isNullOrEmpty())
+                if (!i.select("div[class=checkbox-info-container]").toString().isEmpty())
                     about = i.select("div[class=checkbox-info-container]")
                         .select("div[class=checkbox-info__description]")
                         .text()
@@ -156,8 +156,10 @@ class Parsers {
                 Log.d(PARSING_LOG + "sdafsgd...", "ingredient: $name, count: $count")
             }
 
-
             Log.d(PARSING_LOG + "sdafsgd", "title: $title")
+
+            //if (title.isEmpty() && ingredientsList.isEmpty()) return null
+
             return Ingredients(true, title, ingredientsList, null)
 
         } else if (page.select("div[class=section-title title]") != null) {
@@ -169,6 +171,9 @@ class Parsers {
             text = text.replace("<br>", "\n")
 
             Log.d(PARSING_LOG + "sdafsgd", "isNotAdaptive: $text")
+
+           // if (text.isEmpty()) return null
+
             return Ingredients(false, null, null, text)
         } else
             return null

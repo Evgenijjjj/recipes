@@ -1,11 +1,11 @@
 package r.evgenymotorin.recipes.parsing
 
 import android.util.Log
+import android.view.View
+import android.widget.ProgressBar
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
-import r.evgenymotorin.recipes.fragments.SearchFragment.Companion.isNowLoadingData
 import r.evgenymotorin.recipes.rows.RecipeRow
-import java.net.URLEncoder
 import rx.Observable
 import rx.Single
 import rx.android.schedulers.AndroidSchedulers
@@ -13,10 +13,12 @@ import rx.schedulers.Schedulers
 
 
 class Search {
-    fun searchPostsInToRow(adapter: GroupAdapter<ViewHolder>, searchKey: String, pageNum: Int) {
-        var encodedKey = URLEncoder.encode(searchKey, "utf-8")
-        Log.d("search_log", "key: $encodedKey")
-        val url = "https://www.edimdoma.ru/retsepty?direction=&field=&page=$pageNum&query=$encodedKey&user_ids=&with_ingredient=&without_ingredient="
+    private var isNowLoadingData = false
+
+    fun searchPostsInToRow(adapter: GroupAdapter<ViewHolder>, url: String, progress: ProgressBar) {
+        isNowLoadingData = true
+
+        progress.visibility = View.VISIBLE
 
         Query().querySearchElements(url)
             .flatMap { urls -> Observable.from(urls) }
@@ -26,8 +28,14 @@ class Search {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe { adapter.add(RecipeRow(it)) }
             }
-            .doOnCompleted { isNowLoadingData = false }
+            .doOnCompleted {
+                isNowLoadingData = false
+                progress.visibility = View.INVISIBLE
+            }
             .subscribe {}
+    }
 
+    fun isNowLoadingData(): Boolean {
+        return isNowLoadingData
     }
 }
