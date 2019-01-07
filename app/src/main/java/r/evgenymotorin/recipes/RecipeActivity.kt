@@ -1,5 +1,6 @@
 package r.evgenymotorin.recipes
 
+import android.os.Build
 import android.support.design.widget.TabLayout
 
 
@@ -7,6 +8,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.os.Bundle
+import android.support.annotation.RequiresApi
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -20,6 +22,7 @@ import r.evgenymotorin.recipes.fragments.StepsFragment
 import r.evgenymotorin.recipes.parsing.Parsers
 import r.evgenymotorin.recipes.parsing.Query
 
+const val RECIPE_ACTIVITY_LOG = "recipe_activity"
 class RecipeActivity : BaseActivity() {
 
     companion object {
@@ -70,10 +73,25 @@ class RecipeActivity : BaseActivity() {
         return true
     }
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
 
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_add_in_favorites) {
+            if (item.title == getString(R.string.favorite_heart_title)) {
+                /**
+                 * RM FROM DATABASE
+                 */
+                item.title = getString(R.string.heart_title)
+                item.icon = getDrawable(R.drawable.heart)
+            } else {
+                /**
+                 * ADD IN DATABASE
+                 */
+                item.title = getString(R.string.favorite_heart_title)
+                item.icon = getDrawable(R.drawable.favorite_heart)
+            }
+
             return true
         }
 

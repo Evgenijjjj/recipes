@@ -24,7 +24,7 @@
                 android:layout_weight="1"
                 android:background="?attr/colorPrimary"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
-                app:layout_scrollFlags="enterAlways">
+                app:layout_scrollFlags="scroll|enterAlways">
 
         </android.support.v7.widget.Toolbar>
 

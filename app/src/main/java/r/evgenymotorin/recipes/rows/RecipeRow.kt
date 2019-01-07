@@ -1,13 +1,10 @@
 package r.evgenymotorin.recipes.rows
 
-import android.util.Log
-import android.view.View
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.recipe_row.view.*
 import r.evgenymotorin.recipes.R
-import r.evgenymotorin.recipes.fragments.SEARCH_FRAGMENT_LOG
 import r.evgenymotorin.recipes.fragments.SearchFragment.Companion.defPostBitmap
 import r.evgenymotorin.recipes.model.Post
 
@@ -45,7 +42,7 @@ class RecipeRow(private val post: Post): Item<ViewHolder>() {
             viewHolder.itemView.time_recipe_row.alpha = 1f
         }
 
-        if (post.ingredients.isEmpty()) {
+        if (post.ingredients.isEmpty() || post.ingredients == "0") {
             viewHolder.itemView.img_ingredients_text_view_recipe_row.alpha = 0.2f
             viewHolder.itemView.ingredients_text_view_recipe_row.alpha = 0.2f
         } else {
@@ -57,7 +54,5 @@ class RecipeRow(private val post: Post): Item<ViewHolder>() {
 
         else Picasso.get().load(post.imageUrl)
             .into(viewHolder.itemView.image_recipe_row)
-
-       // Log.d(SEARCH_FRAGMENT_LOG, "VH: ${post.recipeName}, url=${post.imageUrl}, postUrl=${post.recipeUrl}")
     }
 }
