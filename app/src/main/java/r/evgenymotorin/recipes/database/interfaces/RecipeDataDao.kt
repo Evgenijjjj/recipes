@@ -24,7 +24,7 @@ interface RecipeDataDao {
     fun getRecipeWithId(ID: Int): RecipeData
 
     @Query("SELECT * from RecipeData WHERE recipeUrl = :URL LIMIT 1")
-    fun getrecipeWithUrl(URL: String): RecipeData
+    fun getRecipeWithUrl(URL: String): RecipeData?
 
     @Query("DELETE FROM RecipeData WHERE recipeUrl = :URL")
     fun deleteRecipeWithUrl(URL: String)

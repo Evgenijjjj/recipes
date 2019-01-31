@@ -1,4 +1,4 @@
-package r.evgenymotorin.recipes.di.fragment
+package r.evgenymotorin.recipes.di.modules
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -9,9 +9,12 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.PopupWindow
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.ViewHolder
 import dagger.Module
 import dagger.Provides
 import r.evgenymotorin.recipes.R
+import r.evgenymotorin.recipes.database.RecipesDataBaseHelper
 import r.evgenymotorin.recipes.parsing.Search
 import javax.inject.Singleton
 
@@ -60,7 +63,14 @@ class FragmentModule(private val activity: FragmentActivity) {
     }
 
     @Provides
-    @Singleton fun providesPostsSearch(): Search {
-        return Search()
+    @Singleton
+    fun providesPostsSearch(dbHelper: RecipesDataBaseHelper): Search {
+        return Search(dbHelper)
     }
+
+   /*@Provides
+    @Singleton
+    fun providesAdapter(): GroupAdapter<ViewHolder> {
+        return GroupAdapter<ViewHolder>()
+    }*/
 }

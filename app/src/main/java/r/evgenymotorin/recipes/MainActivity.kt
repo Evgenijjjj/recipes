@@ -1,6 +1,8 @@
 package r.evgenymotorin.recipes
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.design.widget.NavigationView
@@ -10,8 +12,9 @@ import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import r.evgenymotorin.recipes.di.activity.BaseActivity
+import r.evgenymotorin.recipes.di.base.BaseActivity
 import r.evgenymotorin.recipes.fragments.CategoriesFragment
+import r.evgenymotorin.recipes.fragments.FavouritesFragment
 import r.evgenymotorin.recipes.fragments.SearchFragment
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -39,10 +42,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         nav_view.menu.getItem(0).isChecked = true
         nav_view.setNavigationItemSelectedListener(this)
 
-        title = getString(R.string.search)
+        title = getString(R.string.categories)
         supportFragmentManager.beginTransaction()
-            .add(R.id.main_box_content_main, SearchFragment(), getString(R.string.searchFragment))
-            .addToBackStack(getString(R.string.searchFragment))
+            .add(R.id.main_box_content_main, CategoriesFragment(), getString(R.string.categoriesFragment))
+            .addToBackStack(getString(R.string.categoriesFragment))
             .commit()
     }
 
@@ -90,14 +93,17 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                     .addToBackStack(getString(R.string.categoriesFragment))
                     .commit()
             }
-            R.id.nav_favorites -> {
+            R.id.nav_favorites -> run {
+                title = getString(R.string.favourites)
 
+                if (fragmentIsExists(getString(R.string.favouritesFragment))) return@run
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.main_box_content_main, FavouritesFragment(), getString(R.string.favouritesFragment))
+                    .addToBackStack(getString(R.string.favouritesFragment))
+                    .commit()
             }
             R.id.nav_share -> {
-
-            }
-            R.id.nav_send -> {
-
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName")))
             }
         }
 

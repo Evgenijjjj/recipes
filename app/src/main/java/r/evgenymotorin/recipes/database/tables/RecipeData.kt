@@ -16,10 +16,21 @@ data class RecipeData(
     @ColumnInfo(name = "ingredientsCount") var ingredientsCount: String,
     @ColumnInfo(name = "firstStepPtr") var firstStepPtr: Int?,
     @ColumnInfo(name = "aboutDescription") var aboutDescription: String?,
-    @ColumnInfo(name = "firstImgAboutPtr") var firstImgAboutPtr: Int?
+    @ColumnInfo(name = "firstImgAboutPtr") var firstImgAboutPtr: Int?,
+    @ColumnInfo(name = "adaptiveIngredientFlag") var adaptiveIngredientFlag: Int?,
+    @ColumnInfo(name = "adaptiveIngredientsTitle") var adaptiveIngredientsTitle: String?,
+    @ColumnInfo(name = "notAdaptiveIngredientsText") var notAdaptiveIngredientsText: String?,
+    @ColumnInfo(name = "firstAdaptiveIngredientPtr") var firstAdaptiveIngredientPtr: Int?
+
+
 ) {
-    @Ignore
+   /* @Ignore
     constructor(recipeUrl: String, imageUrl: String?, recipeName: String, numberOfServings: String, cookingTime: String, ingredientsCount: String):
             this(null, recipeUrl, imageUrl, recipeName, numberOfServings, cookingTime, ingredientsCount,
-                null, null, null)
+                null, null, null)*/
+
+    constructor() : this(null, "", null, "",
+        "", "", "", null,
+        null,null, null, null,
+        null, null)
 }

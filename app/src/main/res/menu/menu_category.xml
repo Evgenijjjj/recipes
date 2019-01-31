@@ -2,7 +2,10 @@
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="r.evgenymotorin.recipes.CategoryActivity">
+
+    <!-- Add search by category in the future -->
     <item
+            android:visible="false"
             android:id="@+id/action_search"
             android:title="Search"
             android:icon="@drawable/search"

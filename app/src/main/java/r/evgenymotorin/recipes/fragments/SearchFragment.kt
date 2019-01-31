@@ -17,7 +17,7 @@ import android.view.inputmethod.InputMethodManager
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.search_fragment.*
-import r.evgenymotorin.recipes.di.fragment.BaseFragment
+import r.evgenymotorin.recipes.di.base.BaseFragment
 import android.support.v7.widget.RecyclerView
 import android.widget.Toast
 import r.evgenymotorin.recipes.MainActivity.Companion.internetConnectionStatus
@@ -89,7 +89,7 @@ class SearchFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         defPostBitmap = defaultPostBitmap
-        search = Search()
+        search = Search(dbHelper)
 
         adapter.setOnItemClickListener { item, _ ->
             val row = (item as RecipeRow)
@@ -166,7 +166,7 @@ class SearchFragment : BaseFragment() {
                         "utf-8"
                     )}"
 
-            postsSearch.searchPostsInToRow(adapter, url, progress_bar_search_fragment)
+            postsSearch.searchPostsInToRow(adapter, url, progress_bar_search_fragment, first_load_progress_search_fragment)
             true
         }
     }

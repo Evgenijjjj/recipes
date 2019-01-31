@@ -5,6 +5,11 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
+import r.evgenymotorin.recipes.database.RecipesDataBaseHelper
+import r.evgenymotorin.recipes.database.tables.AboutImageData
+import r.evgenymotorin.recipes.database.tables.AdaptiveIngredientData
+import r.evgenymotorin.recipes.database.tables.StepData
+import r.evgenymotorin.recipes.db.tables.RecipeData
 import r.evgenymotorin.recipes.model.*
 
 
@@ -37,57 +42,153 @@ class Parsers {
         return list
     }
 
-    fun scrapPostFromHTML(post: Element): Post {
+    fun scrapPostFromHTML(post: Element): RecipeData {
+        val recipeData = RecipeData()
 
-        var imgUrl = post.select("img[title]")
+        recipeData.imageUrl = post.select("img[title]")
             .attr("src")
 
-        if (imgUrl == defaultPictureUrl)
-            imgUrl = ""
+        if (recipeData.imageUrl == defaultPictureUrl)
+            recipeData.imageUrl = null
 
-        val recipeName = post.select("img[title]")
+        recipeData.recipeName = post.select("img[title]")
             .attr("title")
 
-        val postUrl = "https://www.edimdoma.ru" + post
+        recipeData.recipeUrl = "https://www.edimdoma.ru" + post
             .select("a[href]")[0]
             .attr("href")
 
-        var countOfPersons = ""
-        var cookingTime = ""
-        var ingredientsCount = ""
-
-        val recipePageHTML = Jsoup.connect(postUrl).get()
+        val recipePageHTML = Jsoup.connect(recipeData.recipeUrl).get()
 
         if (recipePageHTML.getElementsByClass("entry-stats__item entry-stats__item_persons") != null)
-            countOfPersons = recipePageHTML.select("div[class=entry-stats__item entry-stats__item_persons]")
+            recipeData.numberOfServings = recipePageHTML.select("div[class=entry-stats__item entry-stats__item_persons]")
                 .select("div[class=entry-stats__value]")
                 .text()
 
 
         if (recipePageHTML.getElementsByClass("entry-stats__item entry-stats__item_cooking") != null)
-            cookingTime = recipePageHTML.select("div[class=entry-stats__item entry-stats__item_cooking]")
+            recipeData.cookingTime = recipePageHTML.select("div[class=entry-stats__item entry-stats__item_cooking]")
                 .select("div[class=entry-stats__value]")
                 .text()
 
         if (recipePageHTML.getElementsByClass("field-row recipe_ingredients") != null) {
-            ingredientsCount = recipePageHTML.select("div[class=field-row recipe_ingredients]")
+            recipeData.ingredientsCount = recipePageHTML.select("div[class=field-row recipe_ingredients]")
                 .select("table[class=definition-list-table]").size.toString()
-            Log.d(PARSING_LOG+ "dfegrbh", "carusel size  = $ingredientsCount for: $postUrl")
+            //Log.d(PARSING_LOG+ "dfegrbh", "carusel size  = $ingredientsCount for: $postUrl")
         }
 
         else if (recipePageHTML.getElementsByClass("content-box__content content-box__content_grey js-mediator-article") != null) {
-            ingredientsCount = "${recipePageHTML
+            recipeData.ingredientsCount = "${recipePageHTML
                 .select("div[class=content-box__content content-box__content_grey js-mediator-article]")
                 .select("br").size + 1}"
-            Log.d(PARSING_LOG+ "dfegrbh", "NOT CARUSEL s: $ingredientsCount FOR $postUrl")
+            //Log.d(PARSING_LOG+ "dfegrbh", "NOT CARUSEL s: $ingredientsCount FOR $postUrl")
         }
 
 
-        if (recipePageHTML.select("table[class=definition-list-table]").isNotEmpty())
-            Log.d(PARSING_LOG, "url: $postUrl")
+       // if (recipePageHTML.select("table[class=definition-list-table]").isNotEmpty())
+            //Log.d(PARSING_LOG, "url: $postUrl")
 
+        //dbHelper.db.RecipeDataDao().insert(recipeData)
+        //val newRecipeData = dbHelper.db.RecipeDataDao().getLastRecipe()
 
-        return Post(postUrl, imgUrl, recipeName, countOfPersons, cookingTime, ingredientsCount)
+        /*val about = this.scrapAboutInformationFromHTML(recipePageHTML)
+        val steps = this.scrapStepsFromHTML(recipePageHTML)
+        val ingredients = this.scrapIngredientsFromHTML(recipePageHTML)
+
+        if (about != null) {
+            recipeData.aboutDescription = about.description
+
+            for (i in about.imgUrlsList) {
+                val aboutImageData = AboutImageData()
+                aboutImageData.imageUrl = i
+                dbHelper.addAboutImageDataInRecipeData(aboutImageData, recipeData)
+            }
+        }
+
+        for (step in steps) {
+            val stepData = StepData()
+
+            stepData.stepDescription = step.description
+            stepData.stepImageUrl = step.imgUrl
+
+            dbHelper.addStepDataInRecipeData(stepData, recipeData)
+        }
+
+        if (ingredients != null) {
+            if (ingredients.isAdaptive) {
+                recipeData.adaptiveIngredientFlag = 1
+                recipeData.adaptiveIngredientsTitle = ingredients.title
+
+                for (adaptiveIngredient in ingredients.adaptiveIngredients!!) {
+                    val adaptiveIngredientData = AdaptiveIngredientData()
+
+                    adaptiveIngredientData.count = adaptiveIngredient.count
+                    adaptiveIngredientData.description = adaptiveIngredient.aboutIngredient
+                    adaptiveIngredientData.ingredient = adaptiveIngredient.ingredient
+
+                    dbHelper.addAdaptiveIngredientDataInRecipeData(adaptiveIngredientData, recipeData)
+                }
+
+            } else {
+                recipeData.adaptiveIngredientFlag = 0
+                recipeData.notAdaptiveIngredientsText = ingredients.text
+            }
+            //recipeData.adaptiveIngredientFlag = if (ingredients.isAdaptive) 1 else 0
+            //ingredients.adaptiveIngredients!![0].
+        }*/
+
+        //dbHelper.db.RecipeDataDao().updateRecipe(recipeData)
+        return recipeData
+        //return Post(postUrl, imgUrl, recipeName, countOfPersons, cookingTime, ingredientsCount)
+    }
+
+    fun scrapDetailedInformationForRecipeData(dbHelper: RecipesDataBaseHelper, recipeData: RecipeData) {
+        val recipePageHTML = Jsoup.connect(recipeData.recipeUrl).get()
+
+        val about = this.scrapAboutInformationFromHTML(recipePageHTML)
+        val steps = this.scrapStepsFromHTML(recipePageHTML)
+        val ingredients = this.scrapIngredientsFromHTML(recipePageHTML)
+
+        if (about != null) {
+            recipeData.aboutDescription = about.description
+
+            for (i in about.imgUrlsList) {
+                val aboutImageData = AboutImageData()
+                aboutImageData.imageUrl = i
+                dbHelper.addAboutImageDataInRecipeData(aboutImageData, recipeData)
+            }
+        }
+
+        for (step in steps) {
+            val stepData = StepData()
+
+            stepData.stepDescription = step.description
+            stepData.stepImageUrl = step.imgUrl
+
+            dbHelper.addStepDataInRecipeData(stepData, recipeData)
+        }
+
+        if (ingredients != null) {
+            if (ingredients.isAdaptive) {
+                recipeData.adaptiveIngredientFlag = 1
+                recipeData.adaptiveIngredientsTitle = ingredients.title
+
+                for (adaptiveIngredient in ingredients.adaptiveIngredients!!) {
+                    val adaptiveIngredientData = AdaptiveIngredientData()
+
+                    adaptiveIngredientData.count = adaptiveIngredient.count
+                    adaptiveIngredientData.description = adaptiveIngredient.aboutIngredient
+                    adaptiveIngredientData.ingredient = adaptiveIngredient.ingredient
+
+                    dbHelper.addAdaptiveIngredientDataInRecipeData(adaptiveIngredientData, recipeData)
+                }
+
+            } else {
+                recipeData.adaptiveIngredientFlag = 0
+                recipeData.notAdaptiveIngredientsText = ingredients.text
+            }
+        }
+        dbHelper.db.RecipeDataDao().updateRecipe(recipeData)
     }
 
     fun scrapAboutInformationFromHTML(page: Document): About? {
@@ -112,7 +213,7 @@ class Parsers {
         return About(list, description)
     }
 
-    fun scrapIngredientsFromHTML(page: Document): Ingredients? {
+    private fun scrapIngredientsFromHTML(page: Document): Ingredients? {
         if (!page.select("div[class=field-row recipe_ingredients]").toString().isEmpty()) {
             var title = ""
 
@@ -158,8 +259,6 @@ class Parsers {
 
             Log.d(PARSING_LOG + "sdafsgd", "title: $title")
 
-            //if (title.isEmpty() && ingredientsList.isEmpty()) return null
-
             return Ingredients(true, title, ingredientsList, null)
 
         } else if (page.select("div[class=section-title title]") != null) {
@@ -172,14 +271,12 @@ class Parsers {
 
             Log.d(PARSING_LOG + "sdafsgd", "isNotAdaptive: $text")
 
-           // if (text.isEmpty()) return null
-
             return Ingredients(false, null, null, text)
         } else
             return null
     }
 
-    fun scrapStepsFromHTML(page: Document): ArrayList<Step> {
+    private fun scrapStepsFromHTML(page: Document): ArrayList<Step> {
         val list: ArrayList<Step> = arrayListOf()
 
         val steps = page.select("div[class=content-box recipe_step]")
@@ -203,5 +300,64 @@ class Parsers {
         }
 
         return list
+    }
+
+    fun scrapAndSaveRecipeDataFromHTML(dbHelper: RecipesDataBaseHelper, recipeUrl: String, recipePage: Document): RecipeData? {
+        val steps = this.scrapStepsFromHTML(recipePage)
+        val about = this.scrapAboutInformationFromHTML(recipePage)
+        val ingredients = this.scrapIngredientsFromHTML(recipePage)
+
+        if (steps.count() < 1 || ingredients == null) return null
+
+        val recipeData = RecipeData()
+
+        recipeData.recipeUrl = recipeUrl
+        recipeData.recipeName = recipePage.select("h1[class^=recipe-header__name]").text()
+        recipeData.imageUrl = about?.imgUrlsList?.get(0)
+
+        recipeData.numberOfServings = if (recipePage.getElementsByClass("entry-stats__item entry-stats__item_persons") != null) {
+            recipePage.select("div[class=entry-stats__item entry-stats__item_persons]")
+                .select("div[class=entry-stats__value]")
+                .text()
+        } else ""
+
+        recipeData.cookingTime = if (recipePage.getElementsByClass("entry-stats__item entry-stats__item_cooking") != null) {
+            recipePage.select("div[class=entry-stats__item entry-stats__item_cooking]")
+                .select("div[class=entry-stats__value]")
+                .text()
+        } else ""
+
+        recipeData.ingredientsCount = if (recipePage.getElementsByClass("field-row recipe_ingredients") != null) {
+            recipePage.select("div[class=field-row recipe_ingredients]")
+                .select("table[class=definition-list-table]").size.toString()
+        }
+        else if (recipePage.getElementsByClass("content-box__content content-box__content_grey js-mediator-article") != null) {
+            "${recipePage
+                .select("div[class=content-box__content content-box__content_grey js-mediator-article]")
+                .select("br").size + 1}"
+        } else ""
+
+        dbHelper.db.RecipeDataDao().insert(recipeData)
+        val newRecipeData = dbHelper.db.RecipeDataDao().getLastRecipe()
+
+        for (step in steps) {
+            val stepData = StepData()
+
+            stepData.stepDescription = step.description
+            stepData.stepImageUrl = step.imgUrl
+
+            dbHelper.addStepDataInRecipeData(stepData, newRecipeData)
+        }
+
+        for (image in about!!.imgUrlsList) {
+            val aboutImageData = AboutImageData()
+
+            aboutImageData.imageUrl = image
+            dbHelper.addAboutImageDataInRecipeData(aboutImageData, newRecipeData)
+        }
+
+        Log.d(PARSING_LOG + "db", "$newRecipeData")
+
+        return newRecipeData
     }
 }

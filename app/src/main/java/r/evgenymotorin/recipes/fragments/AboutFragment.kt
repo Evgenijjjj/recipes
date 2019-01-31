@@ -17,10 +17,9 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.about_recipe_fragment.*
 import kotlinx.android.synthetic.main.image_fragment.*
 import r.evgenymotorin.recipes.R
-import r.evgenymotorin.recipes.RecipeActivity.Companion.pageHTML
-import r.evgenymotorin.recipes.di.fragment.BaseFragment
-import r.evgenymotorin.recipes.model.About
-import r.evgenymotorin.recipes.parsing.Parsers
+import r.evgenymotorin.recipes.database.tables.AboutImageData
+import r.evgenymotorin.recipes.db.tables.RecipeData
+import r.evgenymotorin.recipes.di.base.BaseFragment
 
 
 const val ABOUT_LOG = "about_log"
@@ -29,25 +28,27 @@ class AboutFragment : BaseFragment() {
     private var imageViewPagerAdapter: ImageViewPagerAdapter? = null
 
     companion object {
-        var about: About? = null
+        var aboutImageDataList: List<AboutImageData>? = null
     }
+
+    private var recipeData: RecipeData? = null
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.about_recipe_fragment, container, false)
 
-        if (about?.imgUrlsList != null && about?.imgUrlsList!!.isNotEmpty()) {
+        if (aboutImageDataList != null && aboutImageDataList!!.isNotEmpty()) {
             imageViewPagerAdapter = ImageViewPagerAdapter(childFragmentManager)
             v.findViewById<ViewPager>(R.id.image_view_pager_about_recipe_fragment).adapter = imageViewPagerAdapter
             v.findViewById<ProgressBar>(R.id.progress_about_recipe_fragment).progress = 1
-            v.findViewById<ProgressBar>(R.id.progress_about_recipe_fragment).max = about?.imgUrlsList?.size!!
-            v.findViewById<TextView>(R.id.page_status_about_recipe_fragment).text = "1/${about?.imgUrlsList?.size!!}"
+            v.findViewById<ProgressBar>(R.id.progress_about_recipe_fragment).max = aboutImageDataList!!.size
+            v.findViewById<TextView>(R.id.page_status_about_recipe_fragment).text = "1/${aboutImageDataList!!.size}"
         } else {
             v.findViewById<CardView>(R.id.img_box_about_recipe_fragment).visibility = View.GONE
         }
 
-        if (!about?.description.isNullOrEmpty())
-            v.findViewById<TextView>(R.id.description_about_recipe_fragment).text = about?.description
+        if (!recipeData?.aboutDescription.isNullOrEmpty())
+            v.findViewById<TextView>(R.id.description_about_recipe_fragment).text = recipeData!!.aboutDescription
         else
             v.findViewById<CardView>(R.id.description_box_about_recipe_fragment).visibility = View.GONE
 
@@ -57,12 +58,15 @@ class AboutFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (pageHTML == null) {
-            Toast.makeText(activity, "page == null", Toast.LENGTH_LONG).show()
+        val recipeId = arguments?.getInt(getString(R.string.recipeDataId))
+
+        if (recipeId == null) {
+            Toast.makeText(activity, "recipeID == null", Toast.LENGTH_LONG).show()
             return
         }
 
-        about = Parsers().scrapAboutInformationFromHTML(pageHTML!!)
+        recipeData = db.RecipeDataDao().getRecipeWithId(recipeId)
+        aboutImageDataList = dbHelper.getAllAboutImagesForRecipeData(recipeData!!)
     }
 
     override fun onStart() {
@@ -76,7 +80,7 @@ class AboutFragment : BaseFragment() {
             @SuppressLint("SetTextI18n")
             override fun onPageSelected(p0: Int) {
                 progress_about_recipe_fragment.progress = p0 + 1
-                page_status_about_recipe_fragment.text = "${p0 + 1}/${about?.imgUrlsList?.size!!}"
+                page_status_about_recipe_fragment.text = "${p0 + 1}/${aboutImageDataList?.size}"
             }
         })
     }
@@ -84,14 +88,14 @@ class AboutFragment : BaseFragment() {
 
     private inner class ImageViewPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
         override fun getItem(p0: Int): Fragment? {
-            if (p0 < about?.imgUrlsList?.size!!) {
+            if (p0 < aboutImageDataList!!.size) {
                 return ImageFragment().newInstance(p0)
             }
             return null
         }
 
         override fun getCount(): Int {
-            return about!!.imgUrlsList.size
+            return aboutImageDataList!!.size
         }
     }
 
@@ -115,8 +119,8 @@ class AboutFragment : BaseFragment() {
 
         override fun onStart() {
             super.onStart()
-            if (about!!.imgUrlsList.size > 0) {
-                Picasso.get().load(about!!.imgUrlsList[position]).into(image_image_fragment)
+            if (aboutImageDataList!!.isNotEmpty()) {
+                Picasso.get().load(aboutImageDataList!![position].imageUrl).into(image_image_fragment)
             }
         }
 

@@ -16,8 +16,8 @@ import android.widget.Toast
 
 import kotlinx.android.synthetic.main.activity_category.*
 import kotlinx.android.synthetic.main.fragment_category.view.*
-import r.evgenymotorin.recipes.di.activity.BaseActivity
-import r.evgenymotorin.recipes.di.fragment.BaseFragment
+import r.evgenymotorin.recipes.di.base.BaseActivity
+import r.evgenymotorin.recipes.di.base.BaseFragment
 import r.evgenymotorin.recipes.fragments.*
 
 
@@ -53,16 +53,15 @@ class CategoryActivity : BaseActivity() {
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
     }
 
-
+    /**
+     * Add search by category in the future
+     */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_category, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         val id = item.itemId
 
         if (id == R.id.action_search) {

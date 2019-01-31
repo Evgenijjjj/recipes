@@ -1,14 +1,16 @@
 package r.evgenymotorin.recipes.rows
 
+import android.view.View
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.recipe_row.view.*
 import r.evgenymotorin.recipes.R
+import r.evgenymotorin.recipes.db.tables.RecipeData
 import r.evgenymotorin.recipes.fragments.SearchFragment.Companion.defPostBitmap
 import r.evgenymotorin.recipes.model.Post
 
-class RecipeRow(private val post: Post): Item<ViewHolder>() {
+class RecipeRow(private val post: RecipeData): Item<ViewHolder>() {
     var recipeLink = ""
     var recipeName = ""
 
@@ -24,7 +26,7 @@ class RecipeRow(private val post: Post): Item<ViewHolder>() {
 
         viewHolder.itemView.number_of_servings_recipe_row.text = post.numberOfServings
         viewHolder.itemView.time_recipe_row.text = post.cookingTime
-        viewHolder.itemView.ingredients_text_view_recipe_row.text = post.ingredients
+        viewHolder.itemView.ingredients_text_view_recipe_row.text = post.ingredientsCount
 
         if (post.numberOfServings.isEmpty()) {
             viewHolder.itemView.img_number_of_servings_recipe_row.alpha = 0.2f
@@ -42,15 +44,15 @@ class RecipeRow(private val post: Post): Item<ViewHolder>() {
             viewHolder.itemView.time_recipe_row.alpha = 1f
         }
 
-        if (post.ingredients.isEmpty() || post.ingredients == "0") {
+        if (post.ingredientsCount.isEmpty() || post.ingredientsCount == "0") {
             viewHolder.itemView.img_ingredients_text_view_recipe_row.alpha = 0.2f
-            viewHolder.itemView.ingredients_text_view_recipe_row.alpha = 0.2f
+            viewHolder.itemView.ingredients_text_view_recipe_row.visibility = View.GONE
         } else {
             viewHolder.itemView.img_ingredients_text_view_recipe_row.alpha = 1f
-            viewHolder.itemView.ingredients_text_view_recipe_row.alpha = 1f
+            viewHolder.itemView.ingredients_text_view_recipe_row.visibility = View.VISIBLE
         }
 
-        if (post.imageUrl.isEmpty()) viewHolder.itemView.image_recipe_row.setImageBitmap(defPostBitmap)
+        if (post.imageUrl.isNullOrEmpty()) viewHolder.itemView.image_recipe_row.setImageBitmap(defPostBitmap)
 
         else Picasso.get().load(post.imageUrl)
             .into(viewHolder.itemView.image_recipe_row)

@@ -1,4 +1,4 @@
-package r.evgenymotorin.recipes.di.activity
+package r.evgenymotorin.recipes.di.modules
 
 import android.content.Context
 import dagger.Module
@@ -11,13 +11,13 @@ import java.net.InetSocketAddress
 import java.net.Socket
 
 @Module
-class MainModule(val context: Context){
+class NetworkModule(val context: Context){
 
     @Provides
     fun hasInternetConnection(): Single<Boolean> {
         return Single.fromCallable {
             try {
-                val timeoutMs = 1500
+                val timeoutMs = 3500
                 val socket = Socket()
                 val socketAddress = InetSocketAddress("8.8.8.8", 53)
 

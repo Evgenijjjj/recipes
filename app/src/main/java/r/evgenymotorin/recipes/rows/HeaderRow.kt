@@ -5,7 +5,7 @@ import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.header_row.view.*
 import r.evgenymotorin.recipes.R
 
-class HeaderRow(private val header: String): Item<ViewHolder>() {
+class HeaderRow(private val header: String?): Item<ViewHolder>() {
     override fun getLayout(): Int {
         return R.layout.header_row
     }

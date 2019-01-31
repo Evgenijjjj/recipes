@@ -10,13 +10,17 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import r.evgenymotorin.recipes.R
 import r.evgenymotorin.recipes.RecipeActivity
-import r.evgenymotorin.recipes.di.fragment.BaseFragment
+import r.evgenymotorin.recipes.database.tables.StepData
+import r.evgenymotorin.recipes.db.tables.RecipeData
+import r.evgenymotorin.recipes.di.base.BaseFragment
 import r.evgenymotorin.recipes.model.Step
 import r.evgenymotorin.recipes.parsing.Parsers
 import r.evgenymotorin.recipes.rows.StepRow
 
 class StepsFragment: BaseFragment() {
-    private var steps: ArrayList<Step>? = null
+    private var recipeData: RecipeData? = null
+    private var stepDataList: List<StepData>? = null
+
     private val adapter = GroupAdapter<ViewHolder>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -28,16 +32,19 @@ class StepsFragment: BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (RecipeActivity.pageHTML == null) {
-            Toast.makeText(activity, "page == null", Toast.LENGTH_LONG).show()
+        val recipeId = arguments?.getInt(getString(R.string.recipeDataId))
+
+        if (recipeId == null) {
+            Toast.makeText(activity, "recipeID == null", Toast.LENGTH_LONG).show()
             return
         }
 
-        steps= Parsers().scrapStepsFromHTML(RecipeActivity.pageHTML!!)
+        recipeData = db.RecipeDataDao().getRecipeWithId(recipeId)
+        stepDataList = dbHelper.getAllStepsForRecipeData(recipeData!!)
 
-        if (steps != null && steps!!.isNotEmpty())
-            for (i in 0..(steps!!.size - 1)) {
-                adapter.add(StepRow("Шаг ${i + 1}", steps!![i]))
+        if (stepDataList != null && stepDataList!!.isNotEmpty())
+            for (i in 0..(stepDataList!!.size - 1)) {
+                adapter.add(StepRow("Шаг ${i + 1}", stepDataList!![i]))
             }
 
     }

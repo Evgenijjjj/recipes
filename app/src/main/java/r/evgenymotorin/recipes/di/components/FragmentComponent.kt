@@ -1,6 +1,8 @@
-package r.evgenymotorin.recipes.di.fragment
+package r.evgenymotorin.recipes.di.components
 
 import dagger.Subcomponent
+import r.evgenymotorin.recipes.di.base.BaseFragment
+import r.evgenymotorin.recipes.di.modules.FragmentModule
 import javax.inject.Singleton
 
 @Singleton

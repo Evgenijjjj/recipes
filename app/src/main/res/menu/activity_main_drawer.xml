@@ -5,18 +5,17 @@
 
     <group android:checkableBehavior="single">
         <item
-                android:id="@+id/nav_search"
-                android:icon="@drawable/search"
-                android:title="@string/search"/>
-        <item
                 android:id="@+id/nav_categories"
                 android:icon="@drawable/book"
                 android:title="@string/categories"/>
         <item
+                android:id="@+id/nav_search"
+                android:icon="@drawable/search"
+                android:title="@string/search"/>
+        <item
                 android:id="@+id/nav_favorites"
                 android:icon="@drawable/favourite"
                 android:title="@string/favourites"/>
-
     </group>
 
     <item android:title="Communicate">
@@ -24,11 +23,7 @@
             <item
                     android:id="@+id/nav_share"
                     android:icon="@drawable/ic_menu_share"
-                    android:title="Share"/>
-            <item
-                    android:id="@+id/nav_send"
-                    android:icon="@drawable/ic_menu_send"
-                    android:title="Send"/>
+                    android:title="Оценить"/>
         </menu>
     </item>
 

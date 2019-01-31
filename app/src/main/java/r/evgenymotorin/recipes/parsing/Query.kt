@@ -3,6 +3,8 @@ package r.evgenymotorin.recipes.parsing
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import r.evgenymotorin.recipes.database.RecipesDataBaseHelper
+import r.evgenymotorin.recipes.db.tables.RecipeData
 import rx.Observable
 import rx.Single
 import rx.android.schedulers.AndroidSchedulers
@@ -21,4 +23,16 @@ class Query {
             Jsoup.connect(url).get()
         }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
     }
+
+    fun scrapDetailedInfoForRecipe(dbHelper: RecipesDataBaseHelper, recipeData: RecipeData): Single<Unit> {
+        return Single.fromCallable {
+            Parsers().scrapDetailedInformationForRecipeData(dbHelper, recipeData)
+        }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+    }
+
+    /*fun saveRecipeToDataBase(db: RecipesDataBase, recipePage: Document): Single<Boolean> {
+        return Single.fromCallable {
+            Parsers().saveRecipeToDB(db, recipePage)
+        }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+    }*/
 }

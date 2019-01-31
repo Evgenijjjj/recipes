@@ -2,6 +2,7 @@ package r.evgenymotorin.recipes.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,7 +15,7 @@ import kotlinx.android.synthetic.main.category_recipes_fragment.*
 import r.evgenymotorin.recipes.MainActivity
 import r.evgenymotorin.recipes.R
 import r.evgenymotorin.recipes.RecipeActivity
-import r.evgenymotorin.recipes.di.fragment.BaseFragment
+import r.evgenymotorin.recipes.di.base.BaseFragment
 import r.evgenymotorin.recipes.parsing.Search
 import r.evgenymotorin.recipes.rows.RecipeRow
 
@@ -34,6 +35,9 @@ class CategoryRecipesFragment: BaseFragment() {
         v.findViewById<RecyclerView>(R.id.recycler_category_recipes_fragment).adapter = adapter
         v.findViewById<RecyclerView>(R.id.recycler_category_recipes_fragment).layoutManager = linearLayoutManager
 
+        v.findViewById<CardView>(R.id.update_btn_category_recipes_fragment).setOnClickListener {
+            this.searchPosts(currentPage)
+        }
         return v
     }
 
@@ -41,7 +45,7 @@ class CategoryRecipesFragment: BaseFragment() {
         super.onCreate(savedInstanceState)
 
         adapter = GroupAdapter()
-        search = Search()
+        search = Search(dbHelper)
 
         adapter!!.setOnItemClickListener { item, _ ->
             val row = (item as RecipeRow)
@@ -59,7 +63,8 @@ class CategoryRecipesFragment: BaseFragment() {
     override fun onStart() {
         super.onStart()
 
-        searchPosts(currentPage++)
+        if (recycler_category_recipes_fragment.childCount == 0) searchPosts(currentPage++)
+
 
         recycler_category_recipes_fragment.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -86,11 +91,13 @@ class CategoryRecipesFragment: BaseFragment() {
             Toast.makeText(activity, activity?.getString(R.string.check_internet), Toast.LENGTH_LONG).show()
             currentPage--
 
+            update_btn_category_recipes_fragment.visibility = View.VISIBLE
             false
         } else {
             val url = "$categoryUrl&page=$pageNum"
+            update_btn_category_recipes_fragment.visibility = View.INVISIBLE
 
-            postsSearch.searchPostsInToRow(adapter!!, url, progress_bar_category_recipes_fragment)
+            postsSearch.searchPostsInToRow(adapter!!, url, progress_bar_category_recipes_fragment, first_load_progress_recipe_fragment)
             true
         }
     }
