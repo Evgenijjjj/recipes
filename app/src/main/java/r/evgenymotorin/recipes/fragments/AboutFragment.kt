@@ -25,7 +25,7 @@ import r.evgenymotorin.recipes.di.base.BaseFragment
 const val ABOUT_LOG = "about_log"
 
 class AboutFragment : BaseFragment() {
-    private var imageViewPagerAdapter: ImageViewPagerAdapter? = null
+    private lateinit var imageViewPagerAdapter: ImageViewPagerAdapter
 
     companion object {
         var aboutImageDataList: List<AboutImageData>? = null

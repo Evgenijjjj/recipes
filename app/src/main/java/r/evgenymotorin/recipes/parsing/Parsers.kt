@@ -84,62 +84,7 @@ class Parsers {
             //Log.d(PARSING_LOG+ "dfegrbh", "NOT CARUSEL s: $ingredientsCount FOR $postUrl")
         }
 
-
-       // if (recipePageHTML.select("table[class=definition-list-table]").isNotEmpty())
-            //Log.d(PARSING_LOG, "url: $postUrl")
-
-        //dbHelper.db.RecipeDataDao().insert(recipeData)
-        //val newRecipeData = dbHelper.db.RecipeDataDao().getLastRecipe()
-
-        /*val about = this.scrapAboutInformationFromHTML(recipePageHTML)
-        val steps = this.scrapStepsFromHTML(recipePageHTML)
-        val ingredients = this.scrapIngredientsFromHTML(recipePageHTML)
-
-        if (about != null) {
-            recipeData.aboutDescription = about.description
-
-            for (i in about.imgUrlsList) {
-                val aboutImageData = AboutImageData()
-                aboutImageData.imageUrl = i
-                dbHelper.addAboutImageDataInRecipeData(aboutImageData, recipeData)
-            }
-        }
-
-        for (step in steps) {
-            val stepData = StepData()
-
-            stepData.stepDescription = step.description
-            stepData.stepImageUrl = step.imgUrl
-
-            dbHelper.addStepDataInRecipeData(stepData, recipeData)
-        }
-
-        if (ingredients != null) {
-            if (ingredients.isAdaptive) {
-                recipeData.adaptiveIngredientFlag = 1
-                recipeData.adaptiveIngredientsTitle = ingredients.title
-
-                for (adaptiveIngredient in ingredients.adaptiveIngredients!!) {
-                    val adaptiveIngredientData = AdaptiveIngredientData()
-
-                    adaptiveIngredientData.count = adaptiveIngredient.count
-                    adaptiveIngredientData.description = adaptiveIngredient.aboutIngredient
-                    adaptiveIngredientData.ingredient = adaptiveIngredient.ingredient
-
-                    dbHelper.addAdaptiveIngredientDataInRecipeData(adaptiveIngredientData, recipeData)
-                }
-
-            } else {
-                recipeData.adaptiveIngredientFlag = 0
-                recipeData.notAdaptiveIngredientsText = ingredients.text
-            }
-            //recipeData.adaptiveIngredientFlag = if (ingredients.isAdaptive) 1 else 0
-            //ingredients.adaptiveIngredients!![0].
-        }*/
-
-        //dbHelper.db.RecipeDataDao().updateRecipe(recipeData)
         return recipeData
-        //return Post(postUrl, imgUrl, recipeName, countOfPersons, cookingTime, ingredientsCount)
     }
 
     fun scrapDetailedInformationForRecipeData(dbHelper: RecipesDataBaseHelper, recipeData: RecipeData) {
@@ -191,15 +136,17 @@ class Parsers {
         dbHelper.db.RecipeDataDao().updateRecipe(recipeData)
     }
 
-    fun scrapAboutInformationFromHTML(page: Document): About? {
+    private fun scrapAboutInformationFromHTML(page: Document): About? {
         val list = ArrayList<String>()
 
         val description = page.select("div[class=recipe_description]").text()
 
         if (page.select("div[class=thumb-slider__slide]") != null && !page.select("div[class=thumb-slider__slide]").toString().isNullOrEmpty()) {
             Log.d(PARSING_LOG + "....", "carusel = ${page.select("div[class=thumb-slider__slide]")}")
-            for (e in page.select("div[class=thumb-slider__slide]"))
+            for (e in page.select("div[class=thumb-slider__slide]")) {
+                if (e.select("img").attr("src").isNullOrEmpty()) continue
                 list.add(e.select("img").attr("src"))
+            }
         } else {
             val link = page.select("div[class=content-media]").select("img").attr("src")
 
@@ -210,6 +157,7 @@ class Parsers {
         }
 
         if (list.isEmpty() && description.isNullOrEmpty()) return null
+
         return About(list, description)
     }
 
@@ -351,7 +299,6 @@ class Parsers {
 
         for (image in about!!.imgUrlsList) {
             val aboutImageData = AboutImageData()
-
             aboutImageData.imageUrl = image
             dbHelper.addAboutImageDataInRecipeData(aboutImageData, newRecipeData)
         }
