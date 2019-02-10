@@ -1,5 +1,7 @@
 package r.evgenymotorin.recipes.rows
 
+import android.os.Build
+import android.support.annotation.RequiresApi
 import android.view.View
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.Item
@@ -8,9 +10,8 @@ import kotlinx.android.synthetic.main.recipe_row.view.*
 import r.evgenymotorin.recipes.R
 import r.evgenymotorin.recipes.db.tables.RecipeData
 import r.evgenymotorin.recipes.fragments.SearchFragment.Companion.defPostBitmap
-import r.evgenymotorin.recipes.model.Post
 
-class RecipeRow(private val post: RecipeData): Item<ViewHolder>() {
+class RecipeRow(val post: RecipeData, private val isFavourite: Boolean): Item<ViewHolder>() {
     var recipeLink = ""
     var recipeName = ""
 
@@ -18,11 +19,16 @@ class RecipeRow(private val post: RecipeData): Item<ViewHolder>() {
         return R.layout.recipe_row
     }
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun bind(viewHolder: ViewHolder, position: Int) {
         viewHolder.itemView.name_recipe_row.text = post.recipeName
 
         recipeLink = post.recipeUrl
         recipeName = post.recipeName
+
+        if (isFavourite) viewHolder.itemView.favourite_status_recipe_row.visibility = View.VISIBLE
+        else viewHolder.itemView.favourite_status_recipe_row.visibility = View.INVISIBLE
+
 
         viewHolder.itemView.number_of_servings_recipe_row.text = post.numberOfServings
         viewHolder.itemView.time_recipe_row.text = post.cookingTime

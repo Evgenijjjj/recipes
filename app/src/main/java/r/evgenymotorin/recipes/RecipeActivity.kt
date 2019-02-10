@@ -1,5 +1,7 @@
 package r.evgenymotorin.recipes
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Build
 import android.support.design.widget.TabLayout
 
@@ -35,6 +37,10 @@ class RecipeActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recipe)
+
+        if (!MainActivity.internetConnectionStatus) {
+            Toast.makeText(this, getString(R.string.check_internet), Toast.LENGTH_LONG).show()
+            finish(); return }
 
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -173,4 +179,17 @@ class RecipeActivity : BaseActivity() {
         return supportFragmentManager.findFragmentByTag(fragmentTag) ?: return null
     }
 
+    override fun onDestroy() {
+
+        super.onDestroy()
+    }
+
+    override fun onBackPressed() {
+        val i = Intent()
+        val flag = db.FavouritesDataDao().getFavouritesDataWithUrl(recipeUrl!!) != null
+        i.putExtra(getString(R.string.recipesString), flag)
+        setResult(Activity.RESULT_OK, i)
+
+        super.onBackPressed()
+    }
 }

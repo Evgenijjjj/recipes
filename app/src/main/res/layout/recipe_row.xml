@@ -133,6 +133,13 @@
 
         </LinearLayout>
 
+        <ImageView
+                android:id="@+id/favourite_status_recipe_row"
+                android:src="@drawable/lace"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginLeft="5dp" android:layout_marginStart="5dp"/>
+
     </android.support.constraint.ConstraintLayout>
 
 </android.support.v7.widget.CardView>

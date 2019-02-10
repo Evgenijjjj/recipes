@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
-        android:paddingTop="10dp"
-        android:clipToPadding="false"
-        android:paddingBottom="50dp"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools" android:background="#eeeeee"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:paddingTop="5dp"
+        android:clipToPadding="false"
+        android:paddingBottom="50dp" android:background="#eeeeee"
         android:layout_width="match_parent" android:layout_height="match_parent">
 
     <LinearLayout
@@ -15,12 +15,44 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content">
 
+        <FrameLayout
+                android:id="@+id/actual_btn_categories_fragment"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="@drawable/card_foreground"
+                android:layout_marginBottom="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <TextView
+                    android:id="@+id/actual_textView_categories_fragment"
+                    android:textStyle="italic"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="30dp"
+                    android:maxLines="1"
+                    android:paddingLeft="10dp"
+                    android:layout_marginVertical="10dp"
+                    android:textSize="20dp"
+                    android:text="Подборка: Рецепты месяца"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+            <ImageView
+                    android:layout_marginRight="5dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/right_arrow"
+                    android:layout_gravity="center|right"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"/>
+
+        </FrameLayout>
+
         <android.support.v7.widget.CardView
                 android:id="@+id/dessert_category"
                 android:stateListAnimator="@animator/lift_on_touch"
                 android:clickable="true"
                 android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
+                android:foreground="@drawable/card_foreground"
                 app:cardElevation="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
@@ -53,7 +85,7 @@
                 android:stateListAnimator="@animator/lift_on_touch"
                 android:clickable="true"
                 android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
+                android:foreground="@drawable/card_foreground"
                 app:cardElevation="4dp"
                 android:layout_marginVertical="10dp"
                 android:layout_width="wrap_content"
@@ -84,7 +116,7 @@
                 android:stateListAnimator="@animator/lift_on_touch"
                 android:clickable="true"
                 android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
+                android:foreground="@drawable/card_foreground"
                 app:cardElevation="4dp"
                 android:layout_marginBottom="10dp"
                 android:layout_width="wrap_content"
@@ -118,7 +150,7 @@
                 android:stateListAnimator="@animator/lift_on_touch"
                 android:clickable="true"
                 android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
+                android:foreground="@drawable/card_foreground"
                 app:cardElevation="4dp"
                 android:layout_marginBottom="10dp"
                 android:layout_width="wrap_content"
@@ -152,7 +184,7 @@
                 android:stateListAnimator="@animator/lift_on_touch"
                 android:clickable="true"
                 android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
+                android:foreground="@drawable/card_foreground"
                 app:cardElevation="4dp"
                 android:layout_marginBottom="10dp"
                 android:layout_width="wrap_content"
@@ -183,7 +215,7 @@
                 android:stateListAnimator="@animator/lift_on_touch"
                 android:clickable="true"
                 android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
+                android:foreground="@drawable/card_foreground"
                 app:cardElevation="4dp"
                 android:layout_marginBottom="10dp"
                 android:layout_width="wrap_content"
@@ -214,7 +246,7 @@
                 android:stateListAnimator="@animator/lift_on_touch"
                 android:clickable="true"
                 android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
+                android:foreground="@drawable/card_foreground"
                 app:cardElevation="4dp"
                 android:layout_marginBottom="10dp"
                 android:layout_width="wrap_content"
@@ -245,7 +277,7 @@
                 android:stateListAnimator="@animator/lift_on_touch"
                 android:clickable="true"
                 android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
+                android:foreground="@drawable/card_foreground"
                 app:cardElevation="4dp"
                 android:layout_marginBottom="10dp"
                 android:layout_width="wrap_content"

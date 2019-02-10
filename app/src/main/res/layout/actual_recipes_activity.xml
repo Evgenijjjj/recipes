@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+        android:id="@+id/root_actual_activity"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+    <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar_actual"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/appbar_header_height"
+            android:fitsSystemWindows="true"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+                android:id="@+id/collapsing_toolbar_actual"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                app:contentScrim="@color/colorPrimary"
+                app:expandedTitleMarginStart="@dimen/activity_margin_content"
+                app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
+
+            <ImageView
+                    android:id="@+id/header_actual"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/bludo3"
+                    android:fitsSystemWindows="true"
+                    android:scaleType="centerCrop"
+                    app:layout_collapseMode="parallax"/>
+
+            <View
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/scrim"/>
+
+            <android.support.v7.widget.Toolbar
+                    android:id="@+id/anim_toolbar_actual"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:minHeight="?attr/actionBarSize"
+                    app:layout_collapseMode="pin"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <FrameLayout
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+                android:id="@+id/actual_recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingBottom="@dimen/activity_margin_content"
+                android:paddingTop="@dimen/activity_margin_content"/>
+
+        <android.support.design.widget.FloatingActionButton
+                android:visibility="invisible"
+                android:id="@+id/floating_btn_actual_refresh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:elevation="8dp"
+                android:src="@drawable/reload"
+                app:backgroundTint="@color/colorPrimary"
+                app:fabSize="normal"
+                android:layout_gravity="center"
+                app:elevation="8dp"/>
+
+
+    </FrameLayout>
+
+
+    <android.support.design.widget.FloatingActionButton
+            android:id="@+id/floating_btn_actual_activity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fab_margin"
+            android:clickable="true"
+            android:src="@drawable/settings"
+            app:backgroundTint="#279AF1"
+            app:fabSize="normal"
+            app:layout_anchor="@+id/appbar_actual"
+            app:layout_anchorGravity="bottom|right|end"/>
+
+    <FrameLayout
+            android:id="@+id/prefs_fragment_box_actual_activity"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+</android.support.design.widget.CoordinatorLayout>

@@ -5,13 +5,17 @@ import android.content.Intent
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
+import android.os.Handler
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.nav_header_main.view.*
 import r.evgenymotorin.recipes.di.base.BaseActivity
 import r.evgenymotorin.recipes.fragments.CategoriesFragment
 import r.evgenymotorin.recipes.fragments.FavouritesFragment
@@ -24,6 +28,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     private var checkConnectionAsync: CheckConnectionAsync? = null
+    private var bottomMenu: Menu? = null
+    private lateinit var headerView: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,20 +39,37 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         checkConnectionAsync = CheckConnectionAsync()
         checkConnectionAsync?.execute()
 
-        val toggle = ActionBarDrawerToggle(
-            this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
-        )
+        val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 
         nav_view.menu.getItem(0).isChecked = true
         nav_view.setNavigationItemSelectedListener(this)
 
+        headerView = View.inflate(this, R.layout.nav_header_main, null)
+        nav_view.addHeaderView(headerView)
+
+        headerView.setOnClickListener {
+            it.isEnabled = false
+            startActivity(actualRecipesActivityIntent)
+            Handler().postDelayed({
+                drawer_layout.closeDrawer(GravityCompat.START)
+            }, 500)
+        }
+
         title = getString(R.string.categories)
         supportFragmentManager.beginTransaction()
             .add(R.id.main_box_content_main, CategoriesFragment(), getString(R.string.categoriesFragment))
             .addToBackStack(getString(R.string.categoriesFragment))
             .commit()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        overridePendingTransition(0, 0)
+
+        headerView.isEnabled = true
+        headerView.recipe_period_textView.text = getCurrentPeriod()
     }
 
     override fun onBackPressed() {
@@ -59,18 +82,17 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main, menu)
+        bottomMenu = menu
+        bottomMenu!!.getItem(0).title = getCurrentPeriod()
         return true
     }
 
-    /*override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        when (item.itemId) {
-            R.id.action_settings -> return true
-            else -> return super.onOptionsItemSelected(item)
-        }
-    }*/
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return if (item.itemId == R.id.action_open_actual_recipes_activity) {
+            startActivity(actualRecipesActivityIntent)
+            true
+        } else false
+    }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
@@ -86,7 +108,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             }
             R.id.nav_categories -> run {
                 title = getString(R.string.categories)
-
                 if (fragmentIsExists(getString(R.string.categoriesFragment))) return@run
                 supportFragmentManager.beginTransaction()
                     .add(R.id.main_box_content_main, CategoriesFragment(), getString(R.string.categoriesFragment))

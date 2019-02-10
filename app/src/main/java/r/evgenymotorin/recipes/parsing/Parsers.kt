@@ -22,14 +22,12 @@ class Parsers {
     fun findPosts(url: String): List<Element>? {
         var doc: Document
         val list = ArrayList<Element>()
-
+        Log.d("sfbgh", url)
         try {
 
             doc = Jsoup.connect(url)
                 .get()
-            val postsObject: Elements = doc.select(
-                "article[class=card]"
-            )
+            val postsObject: Elements = doc.select("article[class=card]")
 
             for (post in postsObject)
                 list.add(post)
@@ -38,7 +36,28 @@ class Parsers {
             Log.d(PARSING_LOG, e.toString())
             return null
         }
+        Log.d("sfbgh", list.size.toString())
+        return list
+    }
 
+    fun findSpecialPosts(url: String): List<Element>? {
+        var doc: Document
+        val list = ArrayList<Element>()
+        Log.d("sfbgh", url)
+        try {
+
+            doc = Jsoup.connect(url)
+                .get()
+            val postsObject: Elements = doc.select("article[class=card card-recipe-special]")
+
+            for (post in postsObject)
+                list.add(post)
+
+        } catch (e: Exception) {
+            Log.d(PARSING_LOG, e.toString())
+            return null
+        }
+        Log.d("sfbgh", list.size.toString())
         return list
     }
 
@@ -84,6 +103,52 @@ class Parsers {
             //Log.d(PARSING_LOG+ "dfegrbh", "NOT CARUSEL s: $ingredientsCount FOR $postUrl")
         }
 
+        return recipeData
+    }
+
+    fun scrapSpecialPostFromHTML(post: Element): RecipeData {
+        val recipeData = RecipeData()
+
+        recipeData.imageUrl = post.select("picture[class=card-recipe-special__picture]")
+            .select("img")
+            .attr("src")
+
+        if (recipeData.imageUrl == defaultPictureUrl)
+            recipeData.imageUrl = null
+
+        recipeData.recipeName = post.select("div[class=card__title title]")
+            .text()
+
+        recipeData.recipeUrl = "https://www.edimdoma.ru" + post
+            .select("a[href]")[0]
+            .attr("href")
+
+        val recipePageHTML = Jsoup.connect(recipeData.recipeUrl).get()
+
+        if (recipePageHTML.getElementsByClass("entry-stats__item entry-stats__item_persons") != null)
+            recipeData.numberOfServings = recipePageHTML.select("div[class=entry-stats__item entry-stats__item_persons]")
+                .select("div[class=entry-stats__value]")
+                .text()
+
+
+        if (recipePageHTML.getElementsByClass("entry-stats__item entry-stats__item_cooking") != null)
+            recipeData.cookingTime = recipePageHTML.select("div[class=entry-stats__item entry-stats__item_cooking]")
+                .select("div[class=entry-stats__value]")
+                .text()
+
+        if (recipePageHTML.getElementsByClass("field-row recipe_ingredients") != null) {
+            recipeData.ingredientsCount = recipePageHTML.select("div[class=field-row recipe_ingredients]")
+                .select("table[class=definition-list-table]").size.toString()
+            //Log.d(PARSING_LOG+ "dfegrbh", "carusel size  = $ingredientsCount for: $postUrl")
+        }
+
+        else if (recipePageHTML.getElementsByClass("content-box__content content-box__content_grey js-mediator-article") != null) {
+            recipeData.ingredientsCount = "${recipePageHTML
+                .select("div[class=content-box__content content-box__content_grey js-mediator-article]")
+                .select("br").size + 1}"
+            //Log.d(PARSING_LOG+ "dfegrbh", "NOT CARUSEL s: $ingredientsCount FOR $postUrl")
+        }
+        Log.d("RecipeDatadcds", recipeData.toString())
         return recipeData
     }
 

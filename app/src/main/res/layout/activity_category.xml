@@ -10,7 +10,7 @@
         tools:context=".CategoryActivity">
 
     <android.support.design.widget.AppBarLayout
-            android:id="@+id/appbar"
+            android:id="@+id/appbar_actual"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="0dp"
@@ -32,7 +32,7 @@
                 android:id="@+id/tabs"
                 app:tabIndicatorColor="@android:color/transparent"
                 app:tabSelectedTextColor="@android:color/white"
-                app:tabTextColor="@color/colorPrimaryDark"
+                app:tabTextColor="@color/red_dark"
                 android:layout_width="match_parent"
                 android:layout_height="30dp">
 

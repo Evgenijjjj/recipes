@@ -43,8 +43,10 @@ class FavouritesFragment: BaseFragment() {
         super.onResume()
         adapter.clear()
 
-        for(fd in  db.FavouritesDataDao().getAll())
-            adapter.add(RecipeRow(db.RecipeDataDao().getRecipeWithUrl(fd.recipeUrl)!!))
+        for(fd in  db.FavouritesDataDao().getAll()) {
+            val isFavourite = db.FavouritesDataDao().getFavouritesDataWithUrl(fd.recipeUrl) != null
+            adapter.add(RecipeRow(db.RecipeDataDao().getRecipeWithUrl(fd.recipeUrl)!!, isFavourite))
+        }
 
         if (adapter.itemCount == 0)
             view?.findViewById<TextView>(R.id.empty_list_textview_favourites_fragment)?.visibility = View.VISIBLE

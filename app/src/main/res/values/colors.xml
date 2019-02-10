@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorPrimary">#a40000</color>
+    <color name="colorPrimaryDark">#a40000</color>
     <color name="colorAccent">#D81B60</color>
     <color name="layout_background">#EEEEEE</color>
     <color name="black_35_alpha">#59000000</color>
+
+    <color name="red_dark">#731919</color>
+
+    <color name="primary_500">#3F51B5</color>
+    <!--Indigo 700-->
+    <color name="primary_700">#303F9F</color>
+    <!--Pink 500-->
+    <color name="accent_500">#E91E63</color>
+    <!--Pink 700-->
+    <color name="accent_700">#C2185B</color>
+    <color name="black_trans80">#33000000</color>
+
 </resources>

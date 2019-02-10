@@ -61,16 +61,4 @@ class FragmentModule(private val activity: FragmentActivity) {
 
         return  popupWindow
     }
-
-    @Provides
-    @Singleton
-    fun providesPostsSearch(dbHelper: RecipesDataBaseHelper): Search {
-        return Search(dbHelper)
-    }
-
-   /*@Provides
-    @Singleton
-    fun providesAdapter(): GroupAdapter<ViewHolder> {
-        return GroupAdapter<ViewHolder>()
-    }*/
 }
