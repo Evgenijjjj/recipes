@@ -38,10 +38,6 @@ class RecipeActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recipe)
 
-        if (!MainActivity.internetConnectionStatus) {
-            Toast.makeText(this, getString(R.string.check_internet), Toast.LENGTH_LONG).show()
-            finish(); return }
-
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = intent.getStringExtra(getString(R.string.recipeName))
@@ -53,15 +49,21 @@ class RecipeActivity : BaseActivity() {
             recipeDataId = recipe.id!!
 
             /**
-             * checking for additional information in the database
+             * checking for additional information in the database and internet connection
              */
-            if (recipe.adaptiveIngredientFlag == null && recipe.firstStepPtr == null)
+            val isNotFullRecipeInDB = recipe.adaptiveIngredientFlag == null && recipe.firstStepPtr == null
+
+            if (isNotFullRecipeInDB && MainActivity.internetConnectionStatus)
             Query().scrapDetailedInfoForRecipe(dbHelper, recipe)
                 .subscribe {
                     recipe = db.RecipeDataDao().getRecipeWithUrl(recipeUrl!!)
                     initLogic(recipe!!)
                 }
-            else initLogic(recipe!!)
+            else if (!isNotFullRecipeInDB) initLogic(recipe!!)
+            else {
+                Toast.makeText(this, getString(R.string.check_internet), Toast.LENGTH_LONG).show()
+                finish(); return
+            }
 
         } else {
             Toast.makeText(this, "intent/db error", Toast.LENGTH_LONG).show()

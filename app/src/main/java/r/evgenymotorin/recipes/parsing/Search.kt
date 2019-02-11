@@ -25,7 +25,7 @@ class Search(private val dbHelper: RecipesDataBaseHelper) {
         adapter.add(loadingGroup)
 
         Query().querySearchElements(url)
-            .flatMap { urls -> Observable.from(urls) }
+            .flatMap { urls -> if (urls.isEmpty()) { adapter.add((NothingFoundRow())) };Observable.from(urls) }
             .doOnNext { element ->
                 Log.d("fsvsdvsvsd", element.toString())
                 val postUrl = "https://www.edimdoma.ru" + element
@@ -65,10 +65,6 @@ class Search(private val dbHelper: RecipesDataBaseHelper) {
                     adapter.removeGroup(adapter.getAdapterPosition(loadingGroup))
                     loadingItemFlag = false
                 }
-
-                Handler().postDelayed({
-                    if (adapter.itemCount == 0) adapter.add (NothingFoundRow())
-                }, 750)
             }
             .subscribe {}
     }
